@@ -1,0 +1,7 @@
+TODO
+
++draw the roads and intersections
+	-initialize all the crossroads
+	-have the template draw the roads between the crossroads
+	-make a road class that contains lanes with common crossroads
+-

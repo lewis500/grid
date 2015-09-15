@@ -1,0 +1,13 @@
+
+<svg ng-attr-width="{{::vm.width+vm.m.l+vm.m.r}}" ng-attr-height="{{::vm.height+vm.m.t+vm.m.b}}" class="chart">
+  <g ng-attr-transform="translate({{vm.m.l}},{{vm.m.t}})" class="g-main">
+    <rect ng-attr-width="{{::vm.width}}" ng-attr-height="{{::vm.height}}" class="bg"></rect>
+    <g hor-axis="hor-axis" fun="vm.horAxis" ng-attr-transform="translate(0,{{::vm.height}})">
+      <text ng-attr-x="{{vm.width/2}}" y="35">Time</text>
+    </g>
+    <g ver-axis="ver-axis" fun="vm.verAxis">
+      <text x="5" y="12">Cum. Veh.'s</text>
+    </g>
+    <path ng-attr-d="{{vm.line(vm.memory)}}" class="en"></path>
+  </g>
+</svg>

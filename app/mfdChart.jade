@@ -1,0 +1,10 @@
+svg.chart(ng-attr-width='{{::vm.width+vm.m.l+vm.m.r}}' ng-attr-height='{{::vm.height+vm.m.t+vm.m.b}}')
+	g.g-main(ng-attr-transform='translate({{vm.m.l}},{{vm.m.t}})')
+		rect.bg(ng-attr-width='{{::vm.width}}' ng-attr-height='{{::vm.height}}')
+		g(hor-axis fun='vm.horAxis' ng-attr-transform='translate(0,{{::vm.height}})')
+			text(ng-attr-x='{{vm.width/2}}' y='35') acc.
+		g(ver-axis fun='vm.verAxis' )
+			text(x='5' y='12') flow
+		path.flow(ng-attr-d='{{vm.d()}}')
+		//- g.g-circles
+		//- 	circle.memory(ng-repeat='d in vm.memory track by $index' r='2' ng-attr-transform='translate({{vm.hor(d.n)}},{{vm.ver(d.f)}})')

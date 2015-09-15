@@ -1,0 +1,6 @@
+div(layout flex)
+	div(flex="10" layout layout-align="center center")
+		span(class="md-body-1") {{vm.label}}
+	md-slider(flex ng-model='vm.myData' min='{{vm.min}}' max='{{vm.max}}' step='{{vm.step}}') 
+	div(flex='20' layout layout-align="center center" )
+		input(ng-model='vm.myData' type='number' min='{{vm.min}}' max='{{vm.max}}' step='{{vm.step}}')

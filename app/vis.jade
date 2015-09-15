@@ -1,0 +1,7 @@
+div(layout='row')
+	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
+svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
+	g.g-main(transform='translate(10,10)')
+		g.g-roads
+			//- rect.road(ng-repeat='r in vm.hor_roads track by r.ID' ng-attr-x='{{::vm.scale(r.x)}}' ng-attr-y='{{::vm.scale(r.y)}}' width='100' height='2')
+

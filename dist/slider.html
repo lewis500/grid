@@ -1,0 +1,8 @@
+
+<div layout="layout" flex="flex">
+  <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">{{vm.label}}</span></div>
+  <md-slider flex="flex" ng-model="vm.myData" min="{{vm.min}}" max="{{vm.max}}" step="{{vm.step}}"> </md-slider>
+  <div flex="20" layout="layout" layout-align="center center">
+    <input ng-model="vm.myData" type="number" min="{{vm.min}}" max="{{vm.max}}" step="{{vm.step}}"/>
+  </div>
+</div>
