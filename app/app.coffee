@@ -3,94 +3,76 @@ d3 = require 'd3'
 _ = require 'lodash'
 
 S =
-	grid_size: 8
+	size: 8
 	stopping_time: 6
 	height: 100
 	width: 100
 
 class Lane
-	constructor:(@x,@y,@intersection,@direction)->
-		@id = _.uniqueId 'road-'
-		@cars = []
+	constructor: (@beg,@end,@direction)->
+		@id = _.uniqueId 'lane-'
+		@length = Math.abs( @beg.pos.x-@end.pos.x) + Math.abs( @beg.pos.y-@end.pos.y)
+		@scale.domain [0,length]
+			.range [@beg.pos,@end.pos]
 
-	tick:->
-		for car,i in @cars
-			next_car = @cars[i+1]
-			car.move next_car
+	scale: d3.scale.linear()
 
-		for car in cars
-			car.move_final()
-			if car.isAt @intersection then @intersection.enter car
-
-	receive:(car)->
-		@cars.push car
-
-class Position
-	constructor:(@x,@y)->
-		[@_x,@_y] = [@x,@y] #underscore is for temporary variables
-
-	advance:(direction)->
-		switch direction
-			when 'up' then @_y--
-			when 'right' then @_x++
-			when 'down' then @_y++
-			when 'left' then @_x--
-
-	advance_final: ->
-		[@x,@y] = [@_x,@_y]
+	get_coords: (loc)->
+		@scale loc
 
 class Car
-	constructor: (x,y,@direction,@turns)->
+	constructor: (@lane)->
+		@turns = ['right','up','right','up']
 		@id = _.uniqueId 'car-'
-		@position = new Position x,y
+		@loc = 0
 
 	stop: ->
 		@stopped = S.stopping_time
 
-	isAt: (pos)->
-		{x,y} = @position
-		{x1,y1} = pos
-		x1==x and y1==y
+	set_lane: (lane)->
+		@lane = lane
 
-	trajectory:->
-		{x,y} = @position
-		switch @direction
-			when 'up' then (S.height - y)
-			when 'right' then x
-			when 'down' then y
-			when 'left' then (S.width - x)
+	# move: (next_car)->
+	move: ->
+		# if @stopped > 0
+		# 	@stopped--
+		# else if @loc
+		# else
+		@loc++
+		# if @loc == @lane.length
+		# 	@lane.end.receive this
 
-	move: (next_car)->
-		if @stopped > 0
-			@stopped--
-		else if (next_car?.trajectory-@trajectory)<S.gap
-			@stop()
-		else
-			@position.move @direction
+		# else if (next_car?.loc-@loc)<S.gap
+		# 	@_loc++
+		# else
+		# 	@stop()
 
 	move_final: ->
-		@position.advance_final()
+		@loc = @_loc
+		{@x,@y} = @lane.get_coords @loc
 
-	turn: -> 
-		@direction = @turns.shift()
+	turn: (lanes) -> 
+		new_lane = lanes[@turns.shift()]
 
 class Intersection
-	constructor:(@x,@y)->
-		@cars = []
+	constructor:(@row,@col)->
+		@id = _.uniqueId 'intersection-'
 		@lanes = {}
-
-	add_lane: (lane, direction)->
-		@lanes[direction] = direction
+		@pos = 
+			x: (@col*100/S.size)
+			y: (@row*100/S.size)
 
 	receive:(car)->
 		@cars.push car
-		car.stop()
+		# car.stop()
 
-	tick: ->
+	set_beg_lane: (lane)->
+		@lanes[lane]
+
+	tick: (lanes)->
 		if @cars.length > 0
 			car = @cars.shift()
-			car.turn() #turn the car in the new direction
-			@lanes[car.direction].receive car
+			direction = car.turn @lanes
 
 class Ctrl
 	constructor:(@scope,@el)->
@@ -99,52 +81,61 @@ class Ctrl
 		@height = 100
 		@sel = d3.select @el[0]
 			.select '.g-main'
-		[@intersections,@lanes] = [[],[]]
-		for row in [1..S.grid_size-1]
-			x = row * 100/S.grid_size
-			for col in [1..S.grid_size-1]
-				y = col * 100/S.grid_size
-				intersection = new Intersection x,y
+		@setup()
+
+	setup:->
+		[@intersections,@lanes,@grid] = [[],[],[]]
+
+		@grid = [0..S.size].map (row)=>
+			[0..S.size].map (col)=>
+				intersection = new Intersection row,col
 				@intersections.push intersection
-				for direction in ['left','right','up','down']
-					lane = new Lane x,y,intersection,direction
-					@lanes.push lane
-					intersection.add_lane lane
-		@draw_lanes()
+				intersection
 
-	draw_lanes: ->
-		@sel.select '.g-roads'
-			.selectAll 'roads'
-			.data @lanes
-			.enter()
-			.append 'rect'
-			.attr
-				width: (d)=> @width/S.grid_size
-				height: 1.5
-				class: 'road'
-				transform: (d)=> 
-					rotation = switch 
-						when d.direction is 'up' then 90
-						when d.direction is 'down' then -90
-						when d.direction is 'right' then 180
-						else 0
-					"translate(#{d.x},#{d.y}) rotate(#{rotation})"
+		directions = ['up','right','down','left']
 
-	scale:(n)->
-		n/S.grid_size*100
+		for i in @intersections
+			for dir in directions
+				j = switch
+					when dir=='up' then @grid[i.row-1]?[i.col]
+					when dir=='right' then @grid[i.row][i.col+1]
+					when dir=='down' then @grid[i.row+1]?[i.col]
+					when dir=='left' then @grid[i.row][i.col-1]
+				if j 
+					@lanes.push (lane = new Lane i,j,dir) #i is the end
+					i.set_beg_lane lane
+
+		@cars = [new Car @grid[3][3].lanes.right ]
+
+
+	place_intersection: (d)->
+		"translate(#{d.pos.x},#{d.pos.y})"
+
+	place_lane: (d)->
+		angle = switch 
+			when d.direction is 'up' then -90
+			when d.direction is 'down' then 90
+			when d.direction is 'left' then -180
+			else 0
+		"translate(#{d.beg.pos.x},#{d.beg.pos.y}) rotate(#{angle})"
 
 	click: (val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
-		if @physics
-			d3.timer =>
-					S.advance()
-					i.tick() for i in @intersections
-					lane.tick() for lane in @lanes
-					@scope.$evalAsync()
-					if !@paused then @tick()
-					true
-				, S.pace
+		d3.timer =>
+			
+				S.advance()
+				for c in @cars
+					car.move()
+				for c in @cars
+					car.move_final()
+					if car.loc == car.lane.length
+						car.lane.end.receive car
+				i.tick() for i in @intersections
+				@scope.$evalAsync()
+				if !@paused then @tick()
+				true
+			, S.pace
 
 	play: ->
 		@pause()
@@ -165,8 +156,4 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'd3Der', require './directives/d3Der'
 	.directive 'cumChart', require './cumChart'
 	.directive 'mfdChart', require './mfd'
-	# .directive 'horAxis', require './directives/xAxis'
-	# .directive 'verAxis', require './directives/yAxis'
-	# .animation '.signal', signalAn
-	# .animation '.g-car', leaver
-	# .directive 'sliderDer', require './directives/slider'
+

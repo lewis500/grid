@@ -6801,8 +6801,18 @@ svg.vis,
 cum-chart {
   display: inline block;
 }
-.road {
+.lane {
   fill: #e0e0e0;
-  stroke-width: .5px;
-  stroke: #9e9e9e;
+  opacity: .7;
+}
+rect.intersection {
+  fill: #9e9e9e;
+  stroke: none;
+  opacity: .8;
+}
+line.stripe {
+  stroke: white;
+  opacity: .5;
+  stroke-width: .2;
+  stroke-dasharray: .4,.4;
 }

@@ -10,8 +10,36 @@ svg.vis, cum-chart{
 	display: inline block;
 }
 
-.road{
+.lane{
 	fill: @clr-grey-300;
-	stroke-width: .5px;
-	stroke: @clr-grey-500;
+	opacity: .7;
 }
+
+rect.intersection{
+	fill: @clr-grey-500;
+	stroke: none;
+	opacity: .8;
+}
+
+line.stripe{
+	stroke: white;
+	opacity: .5;
+	stroke-width: .2;
+	stroke-dasharray: .4,.4;
+}
+
+// .up{
+// 	fill: @clr-pink-500;
+// }
+
+// .down{
+// 	fill: @clr-light-blue-500;
+// }
+
+// .right{
+// 	fill: @clr-green-500;
+// }
+
+// .left{
+// 	fill: @clr-orange-500;
+// }

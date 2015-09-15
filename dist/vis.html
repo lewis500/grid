@@ -2,9 +2,20 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
 </div>
-<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
+<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 120 120" ng-init="vm.setup()" class="vis">
   <g transform="translate(10,10)" class="g-main">
-    <g class="g-roads">
+    <g class="g-infrastructure">
+      <g class="g-lanes">
+        <g ng-repeat="d in vm.lanes track by d.id" ng-attr-transform="{{vm.place_lane(d)}}" ng-attr-class="{{d.direction}}" class="g-lane">
+          <rect height="2" width="12.5" class="lane"></rect>
+          <line x2="12.5" class="stripe"></line>
+        </g>
+      </g>
+      <g class="g-intersections">
+        <g ng-repeat="d in vm.intersections track by d.id" ng-attr-transform="{{vm.place_intersection(d)}}" class="g-intersection">
+          <rect width="5" height="5" x="-2.5" y="-2.5" class="intersection"></rect>
+        </g>
+      </g>
     </g>
   </g>
 </svg>
