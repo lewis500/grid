@@ -195,7 +195,7 @@ class Traffic
 				if j 
 					@lanes.push (lane = new Lane i,j,dir) #i is the end
 					i.set_beg_lane lane
-		@cars = _.map _.sample(@lanes,30), (lane)->new Car lane
+		@cars = _.map @lanes, (lane)->new Car lane
 
 	tick: ->
 		_.invoke @intersections,'tick'
