@@ -6,7 +6,7 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" ng-i
 		g.g-infrastructure
 			g.g-intersections
 				g.g-intersection(ng-repeat='i in traffic.intersections track by i.id' ng-attr-transform='{{vm.place_intersection(i)}}')
-					rect.intersection(width='1.8' height='1.8' x='-.9' y='-.9' )
+					rect.intersection(width='2' height='2' x='-1' y='-1' )
 					g.signal( signal-der direction='i.signal.direction')
 
 			g.g-lanes

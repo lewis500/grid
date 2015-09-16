@@ -251,7 +251,7 @@ signalDer = ->
 				.append 'rect'
 				.attr
 					width: 1.2
-					height: .8
+					height: .6
 					class: 'signal'
 					y: -1.2
 					x:-.6
@@ -259,7 +259,12 @@ signalDer = ->
 						"rotate(#{90*i})"
 
 			scope.$watch 'direction',(newVal)->
-				signals.classed 'on', (d)-> d==newVal
+				signals
+					# .transition()
+					# .ease 'cubic'
+					# .delay (d,i)-> i*50
+					# .duration 200
+					.classed 'on', (d)-> d==newVal
 
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer

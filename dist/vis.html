@@ -8,7 +8,7 @@
     <g class="g-infrastructure">
       <g class="g-intersections">
         <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{vm.place_intersection(i)}}" class="g-intersection">
-          <rect width="1.8" height="1.8" x="-.9" y="-.9" class="intersection"></rect>
+          <rect width="2" height="2" x="-1" y="-1" class="intersection"></rect>
           <g signal-der="signal-der" direction="i.signal.direction" class="signal"></g>
         </g>
       </g>
