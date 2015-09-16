@@ -190,13 +190,6 @@ class Ctrl
 					c.move_final()
 					if c.loc == S.lane_length and !c.at_intersection
 						c.lane.end.receive c
-						
-				# for car in @cars
-				# 	car.move_final()
-				# 	if car.loc ==( S.lane_length) and !car.at_intersection
-
-				# for i in @intersections
-				# 	i.tick()
 
 				@scope.$evalAsync()
 				if !@paused then @tick()

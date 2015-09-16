@@ -1,10 +1,4 @@
-TODO
-
-+draw the roads and intersections
-	-initialize all the crossroads
-	-have the template draw the roads between the crossroads
-	-make a road class that contains lanes with common crossroads
--
-
-
-motion trails from canvas
+TO DO
+add a place for the cars to actually be in the intersection
+make things more functional. get rid of the cars array on the lane
+make an animation for the cars to turn

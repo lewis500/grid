@@ -6811,12 +6811,13 @@ cum-chart {
 }
 rect.bg {
   fill: #b0bec5;
+  opacity: .9;
 }
 rect.car {
   fill-opacity: .65;
   stroke-width: .15px;
-  rx: .05px;
-  ry: .05px;
+  rx: .08px;
+  ry: .08px;
   stroke: #212121;
   stroke-opacity: .7;
 }
