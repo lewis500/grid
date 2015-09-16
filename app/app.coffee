@@ -55,6 +55,18 @@ class Lane
 
 		@cars = []
 
+	move_car: (car,i,k)->
+		if car.at_intersection
+			return
+		if car.stopped
+			car.subtract_stop()
+		
+
+	tick: ->
+		_.forEach @cars,(c,i,k)->
+			if @car.
+
+
 	receive: (car)->
 		@cars.unshift car
 
@@ -113,14 +125,36 @@ class Car
 		@lane.receive this
 		@loc = @_loc = 0
 
+# class Signal
+# 	constructor: (@i,@loc)->
+# 		@green = true
+# 		@id = _.uniqueId 'signal-'
+# 		@reset_offset()
+
+# 	@property 'offset', 
+# 		get: -> 
+# 			S.phase*((@i*S.offset)%1)
+
+# 	reset_offset: ->
+# 		[@count, @green] = [@offset, true]
+
+# 	tick: ->
+# 		@count++
+# 		if @count >= S.phase
+# 			[@count, @green] = [0, true]
+# 		else if @count>= (S.green*S.phase)
+# 			@green = false
+
 class Intersection
 	constructor:(@row,@col)->
 		@id = _.uniqueId 'intersection-'
 		@lanes = {}
 		@cars = []
 		@pos = 
-			x: (@col*100/S.size)
-			y: (@row*100/S.size)
+			x: @col*100/S.size
+			y: @row*100/S.size
+
+		# @signal = new Signal
 
 	receive:(car)->
 		car.set_at_intersection true
@@ -130,6 +164,7 @@ class Intersection
 		@lanes[lane.direction] = lane
 
 	tick: ->
+		# @signal.tick()
 		if @cars.length > 0
 			lane = _.sample _.values @lanes
 			if lane.cars.length>0
@@ -139,25 +174,21 @@ class Intersection
 			car.set_at_intersection false
 			car.turn lane
 
-class Ctrl
-	constructor:(@scope,@el)->
-		@paused = true
-		@scope.S = S
-		@setup()
+class Traffic
+	constructor: ->
+
+	directions: ['up','right','down','left']
 
 	setup:->
-		[@intersections,@lanes,@grid] = [[],[],[]]
+		[@intersections,@lanes] = [[],[]]
 
 		@grid = [0..S.size].map (row)=>
 			[0..S.size].map (col)=>
-				intersection = new Intersection row,col
-				@intersections.push intersection
+				@intersections.push (intersection = new Intersection row,col)
 				intersection
 
-		directions = ['up','right','down','left']
-
 		for i in @intersections
-			for dir in directions
+			for dir in @directions
 				j = switch dir
 					when 'up' then @grid[i.row-1]?[i.col]
 					when 'right' then @grid[i.row][i.col+1]
@@ -167,7 +198,24 @@ class Ctrl
 				if j 
 					@lanes.push (lane = new Lane i,j,dir) #i is the end
 					i.set_beg_lane lane
-		@cars = (new Car lane for lane in @lanes)
+		@cars = _.map @lanes, (lane)->new Car lane
+
+	tick: ->
+		_.invoke @lanes, 'move'
+
+		# _.invoke @cars,'move'
+		_.invoke @intersections,'tick'
+		
+		_.forEach @cars, (c)->
+			c.move_final()
+			if c.loc == S.lane_length and !c.at_intersection
+				c.lane.end.receive c
+
+class Ctrl
+	constructor:(@scope,@el)->
+		@paused = true
+		@scope.S = S
+		@scope.traffic = new Traffic
 
 	place_car: (car)->
 		"translate(#{car.x},#{car.y})"
@@ -182,15 +230,7 @@ class Ctrl
 	pause: -> @paused = true
 	tick: ->
 		d3.timer =>
-				_.forEach @cars, (c)-> c.move()
-
-				_.forEach @intersections, (i)-> i.tick()
-				
-				_.forEach @cars, (c)->
-					c.move_final()
-					if c.loc == S.lane_length and !c.at_intersection
-						c.lane.end.receive c
-
+				@scope.traffic.tick()
 				@scope.$evalAsync()
 				if !@paused then @tick()
 				true
