@@ -2,8 +2,9 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
 </div>
-<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 120 120" ng-init="vm.setup()" class="vis">
-  <g transform="translate(10,10)" class="g-main">
+<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" ng-init="vm.setup()" class="vis">
+  <rect width="110" height="110" class="bg"></rect>
+  <g transform="translate(5,5)" class="g-main">
     <g class="g-infrastructure">
       <g class="g-lanes">
         <g ng-repeat="d in vm.lanes track by d.id" ng-attr-class="{{d.direction}}" class="g-lane">

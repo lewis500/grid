@@ -1,6 +1,9 @@
 @import "../bower_components/material-color/material-color";
 @import (inline) "../node_modules/angular-material/angular-material.css";
 
+div[vis-der]{
+	margin-left: 20px;
+}
 
 svg.vis{
 	width: 700px;
@@ -11,29 +14,38 @@ svg.vis, cum-chart{
 }
 
 .lane{
-	stroke: @clr-grey-300;
-	opacity: .7;
-	stroke-width: 1px;
+	stroke: @clr-grey-200;
+	// opacity: .9;
+	stroke-width: 1.2px;
+	stroke-linecap: round;
 }
 
-rect.intersection{
-	fill: @clr-grey-300;
-	stroke: none;
-	opacity: .8;
+rect.bg{
+	fill: @clr-blue-grey-200;
 }
 
-line.stripe{
-	stroke: white;
-	opacity: .5;
-	stroke-width: .2;
-	stroke-dasharray: .4,.4;
-}
+// rect.intersection{
+// 	fill: @clr-grey-300;
+// 	stroke: none;
+// 	opacity: .8;
+// }
+
+// line.stripe{
+// 	stroke: white;
+// 	opacity: .5;
+// 	stroke-width: .2;
+// 	stroke-dasharray: .4,.4;
+// }
 
 rect.car{
 	// fill: @clr-pink-700;
-	fill-opacity: .5;
-	stroke-width: .2px;
-	stroke: @clr-grey-700;
+	fill-opacity: .65;
+	stroke-width: .15px;
+	// stroke: @clr-white;
+	rx: .05px;
+	ry: .05px;
+	stroke: @clr-grey-900;
+	stroke-opacity: .7;
 }
 
 // .up{

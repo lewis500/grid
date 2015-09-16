@@ -1,7 +1,8 @@
 div(layout='row')
 	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
-svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 120 120" ng-init='vm.setup()')
-	g.g-main(transform='translate(10,10)')
+svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" ng-init='vm.setup()')
+	rect.bg(width='110' height='110')
+	g.g-main(transform='translate(5,5)')
 		g.g-infrastructure
 			g.g-lanes
 				g.g-lane(ng-repeat='d in vm.lanes track by d.id' ng-attr-class='{{d.direction}}')
