@@ -6,16 +6,15 @@
   <g transform="translate(10,10)" class="g-main">
     <g class="g-infrastructure">
       <g class="g-lanes">
-        <g ng-repeat="d in vm.lanes track by d.id" ng-attr-transform="{{vm.place_lane(d)}}" ng-attr-class="{{d.direction}}" class="g-lane">
-          <rect height="2" width="12.5" class="lane"></rect>
-          <line x2="12.5" class="stripe"></line>
+        <g ng-repeat="d in vm.lanes track by d.id" ng-attr-class="{{d.direction}}" class="g-lane">
+          <path ng-attr-d="{{::vm.place_lane(d)}}" class="lane"></path>
         </g>
       </g>
       <g class="g-intersections">
-        <g ng-repeat="d in vm.intersections track by d.id" ng-attr-transform="{{vm.place_intersection(d)}}" class="g-intersection">
-          <rect width="5" height="5" x="-2.5" y="-2.5" class="intersection"></rect>
-        </g>
       </g>
+    </g>
+    <g class="g-cars">
+      <rect ng-repeat="car in vm.cars track by car.id" ng-attr-transform="{{vm.place_car(car)}}" width=".8" height=".8" y="-.4" x="-.4" ng-attr-fill="{{car.color}}" class="car"></rect>
     </g>
   </g>
 </svg>

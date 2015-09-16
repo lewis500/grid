@@ -3,7 +3,7 @@
 
 
 svg.vis{
-	width: 325px;
+	width: 700px;
 }
 
 svg.vis, cum-chart{
@@ -11,12 +11,13 @@ svg.vis, cum-chart{
 }
 
 .lane{
-	fill: @clr-grey-300;
+	stroke: @clr-grey-300;
 	opacity: .7;
+	stroke-width: 1px;
 }
 
 rect.intersection{
-	fill: @clr-grey-500;
+	fill: @clr-grey-300;
 	stroke: none;
 	opacity: .8;
 }
@@ -26,6 +27,13 @@ line.stripe{
 	opacity: .5;
 	stroke-width: .2;
 	stroke-dasharray: .4,.4;
+}
+
+rect.car{
+	// fill: @clr-pink-700;
+	fill-opacity: .5;
+	stroke-width: .2px;
+	stroke: @clr-grey-700;
 }
 
 // .up{

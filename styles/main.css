@@ -6795,18 +6795,19 @@ md-tooltip {
     border: 1px solid #fff; } }
 
 svg.vis {
-  width: 325px;
+  width: 700px;
 }
 svg.vis,
 cum-chart {
   display: inline block;
 }
 .lane {
-  fill: #e0e0e0;
+  stroke: #e0e0e0;
   opacity: .7;
+  stroke-width: 1px;
 }
 rect.intersection {
-  fill: #9e9e9e;
+  fill: #e0e0e0;
   stroke: none;
   opacity: .8;
 }
@@ -6815,4 +6816,9 @@ line.stripe {
   opacity: .5;
   stroke-width: .2;
   stroke-dasharray: .4,.4;
+}
+rect.car {
+  fill-opacity: .5;
+  stroke-width: .2px;
+  stroke: #616161;
 }

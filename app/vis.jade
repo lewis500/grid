@@ -4,14 +4,12 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 120 120" ng-i
 	g.g-main(transform='translate(10,10)')
 		g.g-infrastructure
 			g.g-lanes
-				g.g-lane(ng-repeat='d in vm.lanes track by d.id' ng-attr-transform='{{vm.place_lane(d)}}' ng-attr-class='{{d.direction}}')
-					rect.lane(height='2' width='12.5')
-					line.stripe(x2='12.5')
+				g.g-lane(ng-repeat='d in vm.lanes track by d.id' ng-attr-class='{{d.direction}}')
+					path.lane(ng-attr-d='{{::vm.place_lane(d)}}')
+					//- line.stripe(ng-attr-x='{{::S.lane_length}}')
 			g.g-intersections
-				g.g-intersection(ng-repeat='d in vm.intersections track by d.id' ng-attr-transform='{{vm.place_intersection(d)}}')
-					rect.intersection(width='5' height='5' x='-2.5' y='-2.5')
-
-		//- g.g-lanes
-			//- rect.lane(ng-repeat='lane in vm.lanes track by lane.id' ng-attr-transform='{{vm.place_lane(lane)}}')
-			//- rect.road(ng-repeat='r in vm.hor_roads track by r.ID' ng-attr-x='{{::vm.scale(r.x)}}' ng-attr-y='{{::vm.scale(r.y)}}' width='100' height='2')
+				//- g.g-intersection(ng-repeat='d in vm.intersections track by d.id' ng-attr-transform='{{vm.place_intersection(d)}}')
+				//- 	rect.intersection(width='5' height='5' x='-2.5' y='-2.5')
+		g.g-cars
+			rect.car(ng-repeat='car in vm.cars track by car.id' ng-attr-transform='{{vm.place_car(car)}}' width='.8' height='.8' y='-.4' x='-.4' ng-attr-fill='{{car.color}}')
 
