@@ -182,21 +182,21 @@ class Ctrl
 	pause: -> @paused = true
 	tick: ->
 		d3.timer =>
-				# for lane in @lanes
-				# 	lane.cars = _.sortBy lane.cars,'loc'
+				_.forEach @cars, (c)-> c.move()
 
-				for car in @cars
-					car.move()
+				_.forEach @intersections, (i)-> i.tick()
+				
+				_.forEach @cars, (c)->
+					c.move_final()
+					if c.loc == S.lane_length and !c.at_intersection
+						c.lane.end.receive c
+						
+				# for car in @cars
+				# 	car.move_final()
+				# 	if car.loc ==( S.lane_length) and !car.at_intersection
 
-				for car in @cars
-					car.move_final()
-					if car.loc ==( S.lane_length) and !car.at_intersection
-						car.lane.end.receive car
-
-				for i in @intersections
-					i.tick()
-
-
+				# for i in @intersections
+				# 	i.tick()
 
 				@scope.$evalAsync()
 				if !@paused then @tick()
