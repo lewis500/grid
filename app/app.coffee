@@ -13,7 +13,8 @@ S.lane_length = 10
 class Lane
 	constructor: (@beg,@end,@direction)->
 		@id = _.uniqueId 'lane-'
-		@at_intersection = false
+		@length = S.lane_length-1
+		# {@row,@col} = @end
 
 		a = 
 			x: @beg.pos.x
@@ -51,21 +52,33 @@ class Lane
 			.domain [0,S.lane_length]
 			.range [a,b]
 
-		{@row,@col} = @end
 
 		@cars = []
+
+	is_free:->
+		if @cars.length==0
+			return true
+		!(@cars[0].loc==0)
 
 	move_car: (car,i,k)->
 		if car.at_intersection
 			return
 		if car.stopped
-			car.subtract_stop()
-		
+			return car.subtract_stop()
+		if car.loc == @length
+			return @end.receive car
+		if (next_car=k[i+1])
+			if (next_car.loc-car.loc)>=S.space
+				car.advance()
+				car.set_xy @get_coords car.loc
+			else 
+				car.stop()
+		else
+			car.advance()
+			car.set_xy @get_coords car.loc
 
 	tick: ->
-		_.forEach @cars,(c,i,k)->
-			if @car.
-
+		_.forEach @cars,@move_car,this
 
 	receive: (car)->
 		@cars.unshift car
@@ -79,71 +92,32 @@ class Lane
 class Car
 	constructor: (@lane)->
 		@id = _.uniqueId 'car-'
-		@loc = @_loc = _.random 2,5
+		@loc = _.random 2,5
 		@stopped = 0
-		@move_final()
+		# @move_final()
 		@lane.receive this
 		@set_at_intersection false
 		@color = _.sample ['#03A9F4','#8BC34A','#E91E63','#FF5722','#607D8B','#3F51B5']
+		{@x,@y} = @lane.get_coords @loc
 
-	set_at_intersection: (bool)->
-		@at_intersection = bool
+	subtract_stop:->
+		@stopped--
+
+	set_at_intersection: (@at_intersection)->
+
+	set_lane: (@lane)->
 
 	stop: ->
 		@stopped = S.stopping_time 
 
-	move: ->
-		if @at_intersection
-			return
+	advance:->
+		@loc++
 
-		if @stopped>0
-			@stopped--
-			return
+	set_xy: (pos)->
+		{@x,@y} = pos
 
-		cars = @lane.cars
-
-		next_car = cars[cars.indexOf(this) + 1]
-
-		if !next_car
-			@_loc++
-			return
-
-		if (next_car.loc-@loc)>=S.space
-			@_loc++
-			return
-
-		@stop()
-
-	move_final: ->
-		@loc = @_loc
-		coords = @lane.get_coords @loc
-		{@x,@y} = coords
-
-	turn: (new_lane) -> 
-		@lane.remove this
-		@lane = new_lane
-		@lane.receive this
-		@loc = @_loc = 0
-
-# class Signal
-# 	constructor: (@i,@loc)->
-# 		@green = true
-# 		@id = _.uniqueId 'signal-'
-# 		@reset_offset()
-
-# 	@property 'offset', 
-# 		get: -> 
-# 			S.phase*((@i*S.offset)%1)
-
-# 	reset_offset: ->
-# 		[@count, @green] = [@offset, true]
-
-# 	tick: ->
-# 		@count++
-# 		if @count >= S.phase
-# 			[@count, @green] = [0, true]
-# 		else if @count>= (S.green*S.phase)
-# 			@green = false
+	reset_loc: ->
+		@loc=0
 
 class Intersection
 	constructor:(@row,@col)->
@@ -154,8 +128,6 @@ class Intersection
 			x: @col*100/S.size
 			y: @row*100/S.size
 
-		# @signal = new Signal
-
 	receive:(car)->
 		car.set_at_intersection true
 		@cars.push car
@@ -163,16 +135,18 @@ class Intersection
 	set_beg_lane: (lane)->
 		@lanes[lane.direction] = lane
 
+	turn_car:(car,lane)->
+		car.lane.remove car
+		car.set_at_intersection false
+		lane.receive car
+		car.set_lane lane
+		car.reset_loc()
+
 	tick: ->
-		# @signal.tick()
 		if @cars.length > 0
 			lane = _.sample _.values @lanes
-			if lane.cars.length>0
-				if lane.cars[0].loc == 0
-					return
-			car = @cars.shift()
-			car.set_at_intersection false
-			car.turn lane
+			if lane.is_free()
+				@turn_car @cars.shift(),lane
 
 class Traffic
 	constructor: ->
@@ -201,15 +175,8 @@ class Traffic
 		@cars = _.map @lanes, (lane)->new Car lane
 
 	tick: ->
-		_.invoke @lanes, 'move'
-
-		# _.invoke @cars,'move'
+		_.invoke @lanes, 'tick'
 		_.invoke @intersections,'tick'
-		
-		_.forEach @cars, (c)->
-			c.move_final()
-			if c.loc == S.lane_length and !c.at_intersection
-				c.lane.end.receive c
 
 class Ctrl
 	constructor:(@scope,@el)->
