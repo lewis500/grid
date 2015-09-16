@@ -6814,10 +6814,30 @@ rect.bg {
   opacity: .9;
 }
 rect.car {
-  fill-opacity: .65;
+  fill-opacity: .8;
   stroke-width: .15px;
   rx: .08px;
   ry: .08px;
   stroke: #212121;
   stroke-opacity: .7;
+}
+g.g-intersection {
+  opacity: .7;
+}
+rect.intersection {
+  fill: #757575;
+  stroke: #212121;
+  stroke-width: .2;
+  rx: .4;
+  ry: .4;
+}
+.signal rect {
+  rx: .3;
+  ry: .3;
+  stroke: #212121;
+  stroke-width: .15;
+  fill: #f44336;
+}
+.signal rect.on {
+  fill: #4caf50;
 }

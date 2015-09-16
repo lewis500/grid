@@ -7,8 +7,23 @@ S =
 	stopping_time: 5
 	pace: 100
 	space: 2
+	phase: 50
+	green: .5
+	lane_length: 10
 
-S.lane_length = 10
+class Signal
+	constructor: ->
+		@count = 0
+		@direction = 'up_down'
+		@id = _.uniqueId 'signal-'
+
+	tick: ->
+		@count++
+		if @count >= S.phase
+			[@count, @direction] = [0, 'up_down'] #add offset later
+			return
+		if @count >= (S.green*S.phase)
+			@direction = 'left_right'
 
 class Lane
 	constructor: (@beg,@end,@direction)->
@@ -120,14 +135,25 @@ class Intersection
 	constructor:(@row,@col)->
 		@id = _.uniqueId 'intersection-'
 		@lanes = {}
-		@cars_waiting = []
+		up_down = []
+		left_right = []
+		@cars_waiting = 
+			up: up_down
+			down: up_down
+			left: left_right
+			right: left_right
+			up_down: up_down
+			left_right: left_right
+
 		@pos = 
 			x: @col*100/S.size
 			y: @row*100/S.size
 
+		@signal = new Signal
+
 	receive:(car)->
 		car.set_at_intersection true
-		@cars_waiting.push car
+		@cars_waiting[car.lane.direction].push car
 
 	set_beg_lane: (lane)->
 		@lanes[lane.direction] = lane
@@ -138,10 +164,12 @@ class Intersection
 		lane.receive car
 
 	tick: ->
-		if @cars_waiting.length > 0
+		@signal.tick()
+		cars = @cars_waiting[@signal.direction]
+		if cars.length > 0
 			lane = _.sample _.values @lanes
 			if lane.is_free()
-				@turn_car @cars_waiting.shift(),lane
+				@turn_car cars.shift(),lane
 
 class Traffic
 	constructor: ->
@@ -211,8 +239,31 @@ visDer = ->
 		templateUrl: './dist/vis.html'
 		controller: ['$scope', '$element', Ctrl]
 
+signalDer = ->
+	directive = 
+		scope: 
+			direction:'='
+		link:(scope,el,attr)->
+			signals = d3.select el[0]
+				.selectAll 'signals'
+				.data ['up_down','left_right','up_down','left_right']
+				.enter()
+				.append 'rect'
+				.attr
+					width: 1.2
+					height: .8
+					class: 'signal'
+					y: -1.2
+					x:-.6
+					transform: (d,i)->
+						"rotate(#{90*i})"
+
+			scope.$watch 'direction',(newVal)->
+				signals.classed 'on', (d)-> d==newVal
+
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
+	.directive 'signalDer',signalDer
 	.directive 'datum', require './directives/datum'
 	.directive 'd3Der', require './directives/d3Der'
 	.directive 'cumChart', require './cumChart'

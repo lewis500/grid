@@ -6,6 +6,12 @@
   <rect width="110" height="110" class="bg"></rect>
   <g transform="translate(5,5)" class="g-main">
     <g class="g-infrastructure">
+      <g class="g-intersections">
+        <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{vm.place_intersection(i)}}" class="g-intersection">
+          <rect width="1.8" height="1.8" x="-.9" y="-.9" class="intersection"></rect>
+          <g signal-der="signal-der" direction="i.signal.direction" class="signal"></g>
+        </g>
+      </g>
       <g class="g-lanes">
         <g ng-repeat="d in traffic.lanes track by d.id" ng-attr-class="{{d.direction}}" class="g-lane">
           <path ng-attr-d="{{::vm.place_lane(d)}}" class="lane"></path>
