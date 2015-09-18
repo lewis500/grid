@@ -12,14 +12,6 @@ class Lane
 		@setup()
 
 	setup: ->
-		@_scale = d3.scale.linear()
-			.domain [0,S.lane_length]
-
-		if @direction in ['down','right']
-			@_scale.range [@beg.pos,@end.pos]
-		else
-			@_scale.range [@beg.pos,@end.pos]
-
 		a = 
 			x: @beg.pos.x
 			y: @beg.pos.y
@@ -50,11 +42,9 @@ class Lane
 				a.y--
 				b.y--
 
-		[@a,@b] = [a,b]
-
 		@scale = d3.scale.linear()
 			.domain [0,S.lane_length]
-			.range [a,b]
+			.range [(@a=a),(@b=b)]
 
 	is_free:->
 		if @cars.length==0
@@ -76,7 +66,7 @@ class Lane
 				car.stop()
 		else 
 			car.advance()
-			car.set_xy( @scale(car.loc),@_scale(car.loc))
+			car.set_xy @scale car.loc
 			if car.at_destination()
 				_.remove @cars, car
 
@@ -97,7 +87,7 @@ class Lane
 		car.stopped = 0
 		car.loc = 0
 		@cars.unshift car
-		car.set_xy(@scale(car.loc),@_scale(car.loc))
+		car.set_xy @scale car.loc
 
 	remove: (car)->
 		@cars.splice @cars.indexOf car

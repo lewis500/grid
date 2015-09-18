@@ -1,7 +1,7 @@
 _ = require 'lodash'
 S = require './settings'
 class Car
-	constructor: (@turns,@destination)->
+	constructor: (@turns,@d_loc)->
 		@id = _.uniqueId 'car-'
 		@stopped = 0
 		@color = _.sample @colors
@@ -10,7 +10,7 @@ class Car
 		@stopped--
 
 	at_destination: ->
-		(@destination.x == @_x) and (@destination.y == @_y)
+		(@turns.length == 0) and (@loc==@d_loc)
 
 	colors: ['#03A9F4','#8BC34A','#E91E63','#FF5722','#607D8B','#3F51B5']
 
@@ -24,8 +24,7 @@ class Car
 	advance:->
 		@loc++
 
-	set_xy: (pos,_pos)->
+	set_xy: (pos)->
 		{@x,@y} = pos
-		[@_x,@_y] = [_pos.x,_pos.y]
 
 module.exports = Car

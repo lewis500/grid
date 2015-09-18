@@ -11,14 +11,15 @@ class Traffic
 	directions: ['up','right','down','left']
 
 	create_car: ->
-		start = _.sample @outer
-		end = _.sample @inner
-		# if start.
-		# i = _.last(@grid)[3]
-		d = {x: i.pos.x + 20, y: i.pos.y - 35}
-		turns = ['up','up','up','up','right','right','down']
-		lane = i.beg_lanes[turns.shift()]
-		car = new Car turns,d
+		a = _.sample @outer
+		b = _.sample @inner
+		ud = if b.row <= a.row then 'up' else 'down'
+		lr = if b.col <= a.col then 'left' else 'right'
+		uds = _.map [0..Math.abs(b.row-a.row)],(i)-> ud
+		lrs = _.map [0..Math.abs(b.col-a.col)],(i)-> lr
+		turns = _.shuffle _.merge uds,lrs
+		lane = a.beg_lanes[turns.shift()]
+		car = new Car turns,0
 		lane.receive car
 		@cars.push car
 
@@ -30,7 +31,7 @@ class Traffic
 		@grid = [0..S.size].map (row)=>
 			[0..S.size].map (col)=>
 				@intersections.push (intersection = new Intersection row,col)
-				if row<S.size and col<S.size
+				if 0<row<S.size and 0<col<S.size
 					@inner.push intersection
 				else
 					@outer.push intersection
