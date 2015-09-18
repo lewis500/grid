@@ -5,16 +5,7 @@ Signal = require './signal'
 class Intersection
 	constructor:(@row,@col)->
 		@id = _.uniqueId 'intersection-'
-		@lanes = {}
-		up_down = []
-		left_right = []
-		@cars_waiting = 
-			up: up_down
-			down: up_down
-			left: left_right
-			right: left_right
-			up_down: up_down
-			left_right: left_right
+		[@beg_lanes,@end_lanes] = [{},{}]
 
 		@pos = 
 			x: @col*100/S.size
@@ -22,25 +13,20 @@ class Intersection
 
 		@signal = new Signal
 
-	receive:(car, direction)->
-		car.set_at_intersection true
-		@cars_waiting[direction].push car
+		@directions = 
+			'up_down': ['up','down']
+			'left_right': ['left','right']
 
 	set_beg_lane: (lane)->
-		@lanes[lane.direction] = lane
+		@beg_lanes[lane.direction] = lane
 
-	turn_car: (c,i,k) ->
-			new_lane = @lanes[c.turns[0]]
-			if new_lane.is_free()
-				_.remove k, c
-				c.turns.shift()
-				c.lane?.remove c
-				c.set_lane new_lane
-				new_lane.receive c
+	set_end_lane: (lane)->
+		@end_lanes[lane.direction] = lane
+
+	can_go: (direction)->
+		direction in @directions[@signal.direction]
 
 	tick: ->
 		@signal.tick()
-		cars = @cars_waiting[@signal.direction]
-		_.forEach cars, @turn_car,this
 
 module.exports = Intersection

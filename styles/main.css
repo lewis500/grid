@@ -6821,18 +6821,18 @@ rect.car {
   stroke: white;
 }
 g.g-intersection {
-  opacity: .7;
+  opacity: .9;
 }
 rect.intersection {
   fill: #bdbdbd;
-  rx: .4;
-  ry: .4;
-}
-.signal rect {
   rx: .2;
   ry: .2;
-  fill: #f44336;
+}
+.signal rect {
+  rx: .15;
+  ry: .15;
+  fill: #f06292;
 }
 .signal rect.on {
-  fill: #43a047;
+  fill: #4db6ac;
 }

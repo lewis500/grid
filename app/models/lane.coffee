@@ -6,8 +6,15 @@ class Lane
 	constructor: (@beg,@end,@direction)->
 		@id = _.uniqueId 'lane-'
 		@length = S.lane_length-1
+		@beg.set_beg_lane this
+		@end.set_end_lane this
+		@cars = []
+		@setup()
+
+	setup: ->
 		@_scale = d3.scale.linear()
 			.domain [0,S.lane_length]
+
 		if @direction in ['down','right']
 			@_scale.range [@beg.pos,@end.pos]
 		else
@@ -49,32 +56,41 @@ class Lane
 			.domain [0,S.lane_length]
 			.range [a,b]
 
-		@cars = []
-
 	is_free:->
 		if @cars.length==0
-			return true
-		!(@cars[0].loc==0)
+			true
+		else
+			@cars[0].loc>0
 
 	move_car: (car)->
-		car.advance()
-		car.set_xy( @scale(car.loc),@_scale(car.loc))
-		if car.at_destination()
-			return _.remove @cars, car
 		if car.loc == @length
-			@end.receive car,@direction
+			if @end.can_go @direction
+				target = @end.beg_lanes[car.turns[0]]
+				if target.is_free()
+					car.turns.shift()
+					_.remove @cars, car
+					target.receive car
+				else 
+					car.stop()
+			else 
+				car.stop()
+		else 
+			car.advance()
+			car.set_xy( @scale(car.loc),@_scale(car.loc))
+			if car.at_destination()
+				_.remove @cars, car
 
 	tick: ->
 		_.forEach @cars,(car,i,k)=>
-			if car.at_intersection
-				return
 			if car.stopped
-				return car.subtract_stop()
-			if (next_car=k[i+1])
-				if (next_car.loc-car.loc)>=S.space
-					return @move_car car
-				return car.stop()
-			@move_car car
+				car.subtract_stop()
+			else if k[i+1]
+				if (k[i+1].loc-car.loc)>=S.space
+					@move_car car
+				else
+					car.stop()
+			else
+				@move_car car
 
 	receive: (car)->
 		car.set_at_intersection false

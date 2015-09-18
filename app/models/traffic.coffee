@@ -14,9 +14,10 @@ class Traffic
 		i = _.last(@grid)[3]
 		d = {x: i.pos.x + 20, y: i.pos.y - 35}
 		turns = ['up','up','up','up','right','right','down']
+		lane = i.beg_lanes[turns.shift()]
 		car = new Car turns,d
+		lane.receive car
 		@cars.push car
-		i.receive car,'down'
 
 	setup:->
 		[@intersections,@lanes,@cars] = [[],[],[]]
@@ -33,19 +34,10 @@ class Traffic
 					when 'right' then @grid[i.row][i.col+1]
 					when 'down' then @grid[i.row+1]?[i.col]
 					when 'left' then @grid[i.row][i.col-1]
-
 				if j 
-					@lanes.push (lane = new Lane i,j,dir) #i is the end
-					i.set_beg_lane lane
+					@lanes.push new Lane i,j,dir
 
 		@create_car()
-
-		# @cars = [@create_car()]
-
-		# car = 
-		# @cars = _.map @lanes[85..87], (lane)->
-		# 	turns = _.sample ['up','right','left','down'],10
-		# 	new Car lane, turns
 
 	tick: ->
 		_.invoke @intersections,'tick'

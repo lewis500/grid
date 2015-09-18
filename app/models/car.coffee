@@ -1,5 +1,5 @@
 _ = require 'lodash'
-
+S = require './settings'
 class Car
 	constructor: (@turns,@destination)->
 		@id = _.uniqueId 'car-'
