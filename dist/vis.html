@@ -7,13 +7,13 @@
   <g transform="translate(5,5)" class="g-main">
     <g class="g-infrastructure">
       <g class="g-intersections">
-        <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{vm.place_intersection(i)}}" class="g-intersection">
+        <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{::vm.place_intersection(i)}}" class="g-intersection">
           <rect width="2" height="2" x="-1" y="-1" class="intersection"></rect>
           <g signal-der="signal-der" direction="i.signal.direction" class="signal"></g>
         </g>
       </g>
       <g class="g-lanes">
-        <g ng-repeat="d in traffic.lanes track by d.id" ng-attr-class="{{d.direction}}" class="g-lane">
+        <g ng-repeat="d in traffic.lanes track by d.id" ng-attr-class="{{::d.direction}}" class="g-lane">
           <path ng-attr-d="{{::vm.place_lane(d)}}" class="lane"></path>
         </g>
       </g>

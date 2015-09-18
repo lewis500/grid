@@ -71,7 +71,7 @@ class Lane
 				_.remove @cars, car
 
 	tick: ->
-		_.forEach @cars,(car,i,k)=>
+		@cars.forEach (car,i,k)=>
 			if car.stopped
 				car.subtract_stop()
 			else if k[i+1]

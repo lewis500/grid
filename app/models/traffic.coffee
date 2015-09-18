@@ -13,13 +13,15 @@ class Traffic
 	create_car: ->
 		a = _.sample @outer
 		b = _.sample @inner
-		ud = if b.row <= a.row then 'up' else 'down'
-		lr = if b.col <= a.col then 'left' else 'right'
-		uds = _.map [0..Math.abs(b.row-a.row)],(i)-> ud
-		lrs = _.map [0..Math.abs(b.col-a.col)],(i)-> lr
-		turns = _.shuffle _.merge uds,lrs
+		ud = if b.row < a.row then 'up' else 'down'
+		lr = if b.col < a.col then 'left' else 'right'
+		uds = [0..Math.abs(b.row-a.row)].map (i)-> ud
+		lrs = [0..Math.abs(b.col-a.col)].map (i)-> lr
+		turns = _.shuffle _.flatten [uds,lrs]
+		turns.pop()
 		lane = a.beg_lanes[turns.shift()]
-		car = new Car turns,0
+		car = new Car turns,_.random 2,8
+		car.b = b
 		lane.receive car
 		@cars.push car
 
@@ -31,10 +33,12 @@ class Traffic
 		@grid = [0..S.size].map (row)=>
 			[0..S.size].map (col)=>
 				@intersections.push (intersection = new Intersection row,col)
-				if 0<row<S.size and 0<col<S.size
+				if (0<row<S.size) and (0<col<S.size)
 					@inner.push intersection
+					intersection.inner = true
 				else
 					@outer.push intersection
+					intersection.outer = true
 				intersection
 
 		for i in @intersections
@@ -47,7 +51,7 @@ class Traffic
 				if j 
 					@lanes.push new Lane i,j,dir
 
-		@create_car()
+		@create_car() for i in [0..200]
 
 	tick: ->
 		_.invoke @intersections,'tick'
