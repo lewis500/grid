@@ -57,4 +57,6 @@ class Traffic
 		_.invoke @intersections,'tick'
 		_.invoke @lanes, 'tick'
 
+		@cars.forEach (c,i,k)->	if c.exited then _.remove k, c
+
 module.exports = Traffic

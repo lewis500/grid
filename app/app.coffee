@@ -35,6 +35,9 @@ class Ctrl
 		@paused = false
 		@tick()
 
+	en_route: (car)->
+		car.en_route
+
 visDer = ->
 	directive = 
 		scope: {}

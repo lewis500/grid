@@ -69,6 +69,7 @@ class Lane
 			car.set_xy @scale car.loc
 			if car.at_destination()
 				_.remove @cars, car
+				car.exit()
 
 	tick: ->
 		@cars.forEach (car,i,k)=>

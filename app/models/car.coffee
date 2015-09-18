@@ -5,6 +5,7 @@ class Car
 		@id = _.uniqueId 'car-'
 		@stopped = 0
 		@color = _.sample @colors
+		@exited = false
 
 	subtract_stop:->
 		@stopped--
@@ -17,6 +18,9 @@ class Car
 	set_at_intersection: (@at_intersection)->
 
 	set_lane: (@lane)->
+
+	exit: ->
+		@exited = true
 
 	stop: ->
 		@stopped = S.stopping_time 
