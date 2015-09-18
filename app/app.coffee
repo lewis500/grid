@@ -9,6 +9,7 @@ class Ctrl
 		@paused = true
 		@scope.S = S
 		@scope.traffic = new Traffic
+		@day_start()
 
 	place_car: (car)->
 		"translate(#{car.x},#{car.y})"
@@ -22,12 +23,18 @@ class Ctrl
 	click: (val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
-		d3.timer =>
-				@scope.traffic.tick()
-				@scope.$evalAsync()
-				if !@paused then @tick()
-				true
-			, S.pace
+		if @physics
+			d3.timer =>
+					if @scope.traffic.done()
+						@day_end()
+						true
+					S.advance()
+					@scope.traffic.tick()
+					@scope.$evalAsync()
+					if !@paused
+						@tick()
+					true
+				, S.pace
 
 	play: ->
 		@pause()
@@ -35,8 +42,16 @@ class Ctrl
 		@paused = false
 		@tick()
 
-	en_route: (car)->
-		car.en_route
+	day_start: ->
+		S.reset_time()
+		@physics = true #physics stage happening
+		@scope.traffic.day_start()
+		@tick()
+
+	day_end: ->
+		@physics = false #physics stage not happening
+		@scope.traffic.day_end()
+		setTimeout => @day_start()
 
 visDer = ->
 	directive = 
@@ -71,7 +86,4 @@ signalDer = ->
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'signalDer',signalDer
-	# .directive 'datum', require './directives/datum'
-	# .directive 'd3Der', require './directives/d3Der'
-	# .directive 'cumChart', require './cumChart'
-	# .directive 'mfdChart', require './mfd'
+

@@ -1,11 +1,14 @@
 _ = require 'lodash'
 S = require './settings'
+
+
 class Car
-	constructor: (@turns,@d_loc)->
-		@id = _.uniqueId 'car-'
-		@stopped = 0
-		@color = _.sample @colors
-		@exited = false
+	constructor: (@_turns,@d_loc,@start_lane)->
+		_.assign this,
+			id: _.uniqueId()
+			cost0: Infinity 
+			target: _.random 4,300
+			color: _.sample @colors
 
 	subtract_stop:->
 		@stopped--
@@ -17,10 +20,16 @@ class Car
 
 	set_at_intersection: (@at_intersection)->
 
-	set_lane: (@lane)->
+	enter:->
+		_.assign this,
+			cost0: @cost
+			exited: false
+			stopped: 0
+			turns: _.clone @_turns
+		@turns.shift()
 
-	exit: ->
-		@exited = true
+	assign_error:-> 
+		@t_en = Math.max 0,(@target + _.random -2,2)
 
 	stop: ->
 		@stopped = S.stopping_time 
@@ -30,5 +39,18 @@ class Car
 
 	set_xy: (pos)->
 		{@x,@y} = pos
+
+	exit: ->
+		[@t_ex, @exited] = [S.time, true]
+
+	eval_cost: ->
+		@sd = @t_ex - S.wish
+		@sp = Math.max( -S.beta * @sd, S.gamma * @sd)
+		@tt = @t_ex - @t_en
+		@cost =  @tt+@sp 
+
+	choose: ->
+		if @cost < @cost0
+			[@cost0,@target] = [@cost, @t_en]
 
 module.exports = Car

@@ -7,28 +7,13 @@ Car = require './car'
 
 class Traffic
 	constructor: ->
-
-	directions: ['up','right','down','left']
-
-	create_car: ->
-		a = _.sample @outer
-		b = _.sample @inner
-		ud = if b.row < a.row then 'up' else 'down'
-		lr = if b.col < a.col then 'left' else 'right'
-		uds = [0..Math.abs(b.row-a.row)].map (i)-> ud
-		lrs = [0..Math.abs(b.col-a.col)].map (i)-> lr
-		turns = _.shuffle _.flatten [uds,lrs]
-		turns.pop()
-		lane = a.beg_lanes[turns.shift()]
-		car = new Car turns,_.random 2,8
-		car.b = b
-		lane.receive car
-		@cars.push car
-
-	setup:->
-		[@intersections,@lanes,@cars] = [[],[],[]]
-		@outer = []
-		@inner = []
+		_.assign this,
+			intersections: []
+			lanes: []
+			outer: []
+			inner: []
+			directions: ['up','right','down','left']
+			cars: []
 
 		@grid = [0..S.size].map (row)=>
 			[0..S.size].map (col)=>
@@ -51,11 +36,58 @@ class Traffic
 				if j 
 					@lanes.push new Lane i,j,dir
 
-		@create_car() for i in [0..200]
+		_.forEach [0..1000], => @create_car()
+
+	create_car: ->
+		a = _.sample @outer
+		b = _.sample @inner
+		ud = if b.row < a.row then 'up' else 'down'
+		lr = if b.col < a.col then 'left' else 'right'
+		uds = [0..Math.abs(b.row-a.row)].map (i)-> ud
+		lrs = [0..Math.abs(b.col-a.col)].map (i)-> lr
+		turns = _.shuffle _.flatten [uds,lrs]
+		start_lane = a.beg_lanes[turns[0]]
+		d_loc = _.random 2,8
+		car = new Car turns,d_loc,start_lane
+		@cars.push car
 
 	tick: ->
 		_.invoke @intersections,'tick'
 		_.invoke @lanes, 'tick'
-		@cars.forEach (c,i,k)->	if c.exited then _.remove k, c
+
+		@waiting.forEach (car)=>
+			if car.t_en < S.time
+				car.enter()
+				car.start_lane.receive car
+				car.turns.pop()
+				_.remove @waiting, car
+				@traveling.push car
+
+		@traveling.forEach (c,i,k)=> 
+			if c.exited
+				_.remove k, c
+
+	done: ->
+		(@waiting.length+@traveling.length)==0
+
+	remove: (car)->
+		@cumEx++
+		_.remove @traveling, car
+
+	day_end:->
+		_.invoke @cars, 'eval_cost'
+		_.sample @cars, 25
+			.forEach (d)->d.choose()
+
+	day_start:->
+		_.assign this,
+			traveling: []
+			cum: []
+			memory: []
+			cumEn: 0
+			cumEx: 0
+			waiting: _.clone(@cars)
+
+		_.invoke @cars, 'assign_error'
 
 module.exports = Traffic

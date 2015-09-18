@@ -13,5 +13,5 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" ng-i
 				g.g-lane(ng-repeat='d in traffic.lanes track by d.id' ng-attr-class='{{::d.direction}}')
 					path.lane(ng-attr-d='{{::vm.place_lane(d)}}')
 		g.g-cars
-			rect.car(ng-repeat='car in traffic.cars track by car.id ' ng-attr-transform='{{vm.place_car(car)}}' width='.8' height='.8' y='-.4' x='-.4' ng-attr-fill='{{car.color}}')
+			rect.car(ng-repeat='car in traffic.traveling track by car.id' ng-attr-transform='{{vm.place_car(car)}}' width='.8' height='.8' y='-.4' x='-.4' ng-attr-fill='{{car.color}}')
 
