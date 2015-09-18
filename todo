@@ -1,4 +1,6 @@
 TO DO
+assign od's
+instead of left_right do east_west
 make a json material color object 
 add a place for the cars to actually be in the intersection
 make things more functional. get rid of the cars array on the lane
