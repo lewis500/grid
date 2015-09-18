@@ -1,7 +1,8 @@
 _ = require 'lodash'
-S = require './models/settings'
 angular = require 'angular'
-
+d3 = require 'd3'
+S = require './models/settings'
+Traffic = require './models/traffic'
 
 class Ctrl
 	constructor:(@scope,@el)->
@@ -67,7 +68,7 @@ signalDer = ->
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'signalDer',signalDer
-	.directive 'datum', require './directives/datum'
-	.directive 'd3Der', require './directives/d3Der'
-	.directive 'cumChart', require './cumChart'
-	.directive 'mfdChart', require './mfd'
+	# .directive 'datum', require './directives/datum'
+	# .directive 'd3Der', require './directives/d3Der'
+	# .directive 'cumChart', require './cumChart'
+	# .directive 'mfdChart', require './mfd'

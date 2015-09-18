@@ -1,5 +1,6 @@
 _ = require 'lodash'
 S = require './settings'
+Signal = require './signal'
 
 class Intersection
 	constructor:(@row,@col)->
@@ -21,17 +22,17 @@ class Intersection
 
 		@signal = new Signal
 
-	receive:(car)->
+	receive:(car, direction)->
 		car.set_at_intersection true
-		@cars_waiting[car.lane.direction].push car
+		@cars_waiting[direction].push car
 
 	set_beg_lane: (lane)->
 		@lanes[lane.direction] = lane
 
-	turn_car: (c) ->
+	turn_car: (c,i,k) ->
 			new_lane = @lanes[c.turns[0]]
 			if new_lane.is_free()
-				_.remove cars, c
+				_.remove k, c
 				c.turns.shift()
 				c.lane?.remove c
 				c.set_lane new_lane
@@ -40,6 +41,6 @@ class Intersection
 	tick: ->
 		@signal.tick()
 		cars = @cars_waiting[@signal.direction]
-		_.forEach cars, @turn_car
+		_.forEach cars, @turn_car,this
 
 module.exports = Intersection

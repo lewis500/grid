@@ -1,4 +1,5 @@
 TO DO
+get rid of the car queues in the intersection, just have it check the lanes
 assign od's
 instead of left_right do east_west
 make a json material color object 

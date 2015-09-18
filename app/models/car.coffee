@@ -5,7 +5,7 @@ class Car
 		@id = _.uniqueId 'car-'
 		@stopped = 0
 		# @lane.receive this
-		@at_intersection = true
+		# @at_intersection = true
 		# @set_at_intersection true
 		# {@x,@y} = @lane.scale (@loc = _.random 2,5)
 		@color = _.sample @colors
@@ -14,7 +14,7 @@ class Car
 		@stopped--
 
 	at_destination: ->
-		(@destination.x == @x) and (@destination.y == @y)
+		(@destination.x == @_x) and (@destination.y == @_y)
 
 	colors: ['#03A9F4','#8BC34A','#E91E63','#FF5722','#607D8B','#3F51B5']
 
@@ -28,10 +28,11 @@ class Car
 	advance:->
 		@loc++
 
-	set_xy: (pos)->
+	set_xy: (pos,_pos)->
 		{@x,@y} = pos
+		[@_x,@_y] = [_pos.x,_pos.y]
 
-	reset_loc: ->
-		@loc=0
+	# reset_loc: ->
+	# 	@loc=0
 
 module.exports = Car

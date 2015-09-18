@@ -1,4 +1,3 @@
-
 S =
 	size: 10
 	stopping_time: 5

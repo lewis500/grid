@@ -6,6 +6,12 @@ class Lane
 	constructor: (@beg,@end,@direction)->
 		@id = _.uniqueId 'lane-'
 		@length = S.lane_length-1
+		@_scale = d3.scale.linear()
+			.domain [0,S.lane_length]
+		if @direction in ['down','right']
+			@_scale.range [@beg.pos,@end.pos]
+		else
+			@_scale.range [@beg.pos,@end.pos]
 
 		a = 
 			x: @beg.pos.x
@@ -13,7 +19,7 @@ class Lane
 
 		b = 
 			x: @end.pos.x  
-			y: @end.pos.y 
+			y: @end.pos.y
 
 		switch @direction
 			when 'up'
@@ -52,11 +58,11 @@ class Lane
 
 	move_car: (car)->
 		car.advance()
-		car.set_xy @scale car.loc
+		car.set_xy( @scale(car.loc),@_scale(car.loc))
 		if car.at_destination()
 			return _.remove @cars, car
 		if car.loc == @length
-			@end.receive car
+			@end.receive car,@direction
 
 	tick: ->
 		_.forEach @cars,(car,i,k)=>
@@ -73,9 +79,9 @@ class Lane
 	receive: (car)->
 		car.set_at_intersection false
 		car.stopped = 0
+		car.loc = 0
 		@cars.unshift car
-		car.reset_loc()
-		car.set_xy @scale car.loc
+		car.set_xy(@scale(car.loc),@_scale(car.loc))
 
 	remove: (car)->
 		@cars.splice @cars.indexOf car
