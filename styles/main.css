@@ -6810,8 +6810,7 @@ cum-chart {
   stroke-linecap: round;
 }
 rect.bg {
-  fill: #b0bec5;
-  opacity: .10;
+  fill: none;
 }
 rect.car {
   fill-opacity: .8;

@@ -1,11 +1,9 @@
 TO DO
 use the get point at length. so you'll make a lane directive.
-get rid of the car queues in the intersection, just have it check the lanes
 assign od's
 instead of left_right do east_west
 make a json material color object 
-add a place for the cars to actually be in the intersection
-make things more functional. get rid of the cars array on the lane
-make an animation for the cars to turn
 
-functional style
+route choice
+
+make the cars brighter colors
