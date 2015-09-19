@@ -5,6 +5,7 @@ Intersection = require './intersection'
 Signal = require './signal'
 Car = require './car'
 
+
 class Traffic
 	constructor: ->
 		_.assign this,
@@ -18,12 +19,6 @@ class Traffic
 		@grid = [0..S.size].map (row)=>
 			[0..S.size].map (col)=>
 				@intersections.push (intersection = new Intersection row,col)
-				if (0<row<S.size) and (0<col<S.size)
-					@inner.push intersection
-					intersection.inner = true
-				else
-					@outer.push intersection
-					intersection.outer = true
 				intersection
 
 		for i in @intersections
@@ -34,7 +29,11 @@ class Traffic
 					when 'down' then @grid[i.row+1]?[i.col]
 					when 'left' then @grid[i.row][i.col-1]
 				if j 
-					@lanes.push new Lane i,j,dir
+					@lanes.push (lane=new Lane i,j,dir)
+					if (0<i.row<(S.size-1)) and (0<i.col<(S.size-1))
+						@inner.push lane
+					else
+						@outer.push lane
 
 		_.forEach [0..S.num_cars], => @create_car()
 
@@ -46,9 +45,12 @@ class Traffic
 		uds = [0..Math.abs(b.row-a.row)].map (i)-> ud
 		lrs = [0..Math.abs(b.col-a.col)].map (i)-> lr
 		turns = _.shuffle _.flatten [uds,lrs]
-		start_lane = a.beg_lanes[turns[0]]
-		d_loc = _.random 2,8
-		car = new Car turns,d_loc,start_lane
+		# turns.shift
+		cells = _.filter a.cells, (d)-> d.is_free S.time
+		if cells.length==0 then return
+		start_cell = _.sample cells
+		des = _.sample(b.cells)._pos
+		car = new Car start_cell,turns,des
 		@cars.push car
 
 	tick: ->
@@ -58,12 +60,15 @@ class Traffic
 			if car
 				if car.t_en < S.time
 					car.enter()
-					car.start_lane.receive car
 					car.turns.pop()
 					_.remove @waiting, car
 					@traveling.push car
 
 		@traveling = _.filter @traveling, (c)-> !c.exited
+
+		for l in @lanes
+			for c in l.cells
+				c.finalize()
 
 		@log()
 

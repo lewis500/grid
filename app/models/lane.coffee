@@ -2,14 +2,58 @@ d3 = require 'd3'
 _ = require 'lodash'
 S = require './settings'
 
+class Cell
+	constructor: (@pos,@_pos)->
+			@x = @pos.x
+			@y = @pos.y
+			@x2 = Math.floor @_pos.x
+			@y2 = Math.floor @_pos.y
+			@last = -Infinity
+			@temp_car = false
+
+	space: S.space
+
+	receive:(car)->
+		car.set_xy @x,@y,@x2,@y2
+		# if !car.exited
+		@temp_car = car
+
+	remove: ->
+		@temp_car = false
+
+	finalize: ->
+		@car = @temp_car
+		if @car
+			@last = S.time
+
+	is_free: (time)->
+		(time-@last)>@space
+
 class Lane
 	constructor: (@beg,@end,@direction)->
 		@id = _.uniqueId 'lane-'
-		@length = S.lane_length-1
 		@beg.set_beg_lane this
 		@end.set_end_lane this
-		@cars = []
 		@setup()
+		@row = Math.min @beg.row,@end.row
+		@col = Math.min @beg.col,@end.col
+
+	tick: ->
+		_.forEachRight @cells, (cell,i,k)=>
+			if !(car=cell.car) then return
+			if i==(k.length-1) #if the last cell
+				if @end.can_go @direction
+					target_lane = @end.beg_lanes[car.turns[0]]
+					target = target_lane?.cells[0]
+					car.turns.shift()
+					if car.turns.length ==0
+						return car.exit()
+			else
+				target = k[i+1]
+
+			if target?.is_free S.time
+				cell.remove()
+				target.receive car,S.time
 
 	setup: ->
 		a = 
@@ -42,57 +86,19 @@ class Lane
 				a.y--
 				b.y--
 
-		@scale = d3.scale.linear()
-			.domain [0,S.lane_length]
-			.range [(@a=a),(@b=b)]
+		scale = d3.scale.linear()
+			.domain [0,S.lane_length-1]
+			.range [a,b]
+			
+		scale2 = d3.scale.linear()
+			.domain [0,S.lane_length-1]
+			.range [@beg.pos,@end.pos]
 
-	is_free:->
-		if @cars.length==0
-			true
-		else
-			@cars[0].loc>0
+		[@a,@b]=[a,b]
 
-	move_car: (car)->
-		if car.loc == @length
-			if @end.can_go @direction
-				target = @end.beg_lanes[car.turns[0]]
-				if target.is_free()
-					car.turns.shift()
-					_.remove @cars, car
-					target.receive car
-				else 
-					car.stop()
-			else 
-				car.stop()
-		else 
-			car.advance()
-			car.set_xy @scale car.loc
-			if car.at_destination()
-				_.remove @cars, car
-				car.exit()
-
-	tick: ->
-		for car,i in @cars
-			if !car then return
-			if car.stopped
-				car.stopped--
-			else if @cars[i+1]
-				if (@cars[i+1].loc-car.loc)>=S.space
-					@move_car car
-				else
-					car.stop()
-			else
-				@move_car car
-
-	receive: (car)->
-		car.set_at_intersection false
-		car.stopped = 0
-		car.loc = 0
-		@cars.unshift car
-		car.set_xy @scale car.loc
-
-	remove: (car)->
-		@cars.splice @cars.indexOf car
-
+		@cells = [0..(S.lane_length-1)].map (n)=> 
+			pos = scale n
+			_pos = scale2 n
+			new Cell pos,_pos
 
 module.exports = Lane

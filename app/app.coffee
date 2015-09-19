@@ -32,10 +32,6 @@ class Ctrl
 					@scope.traffic.tick()
 					@scope.$evalAsync()
 					@paused
-					# if !@paused
-					# 	@tick()
-					# true
-				
 
 	play: ->
 		@pause()
@@ -62,11 +58,6 @@ canDer = ->
 			[width,height] = [+attr.width,+attr.height]
 			fo =d3.select el[0]
 					.append 'foreignObject'	
-					# .attr 'width',100+
-					# .attr 'height',100
-
-			# div = fo.append 'xhtml:div'
-			# 		.attr 'class','mine'
 
 			ctx = fo
 					.append 'xhtml:canvas'
@@ -75,10 +66,10 @@ canDer = ->
 					.node()
 					.getContext '2d'
 
-			ctx.fRect= (x,y,w,h)->
-				x = parseInt x
-				y = parseInt y
-				ctx.fillRect x,y,w,h
+			# ctx.fRect= (x,y,w,h)->
+			# 	x = parseInt x
+			# 	y = parseInt y
+			# 	ctx.fillRect x,y,w,h
 
 			scope.$watch ()->
 					S.time
@@ -87,7 +78,7 @@ canDer = ->
 					_.forEach scope.cars, (c)->
 						ctx.fillStyle = c.color
 						{x,y} = c
-						ctx.fRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
+						ctx.fillRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
 
 visDer = ->
 	directive = 
