@@ -1,6 +1,6 @@
 d3 = require 'd3'
 _ = require 'lodash'
-S = require './settings'
+S = require './models/settings'
 
 class Ctrl
 	constructor:(@scope,el)->
@@ -14,11 +14,11 @@ class Ctrl
 				b: 35
 
 		@hor = d3.scale.linear()
-				.domain [0,S.num_cars*.8]
+				.domain [0,S.num_cars]
 				.range [0,@width]
 
 		@ver = d3.scale.linear()
-			.domain [0, S.num_cars*.55]
+			.domain [0, S.num_cars*.6]
 			.range [@height, 0]
 
 		@line = d3.svg.line()

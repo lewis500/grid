@@ -72,11 +72,12 @@ class Lane
 				car.exit()
 
 	tick: ->
-		@cars.forEach (car,i,k)=>
+		for car,i in @cars
+			if !car then return
 			if car.stopped
-				car.subtract_stop()
-			else if k[i+1]
-				if (k[i+1].loc-car.loc)>=S.space
+				car.stopped--
+			else if @cars[i+1]
+				if (@cars[i+1].loc-car.loc)>=S.space
 					@move_car car
 				else
 					car.stop()

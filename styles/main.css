@@ -6835,3 +6835,22 @@ rect.intersection {
 .signal rect.on {
   fill: #4db6ac;
 }
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.chart path {
+  stroke-width: 1px;
+  fill: none;
+}
+.en {
+  stroke: #e91e63;
+}
+.flow {
+  stroke: #4caf50;
+}
+.ex {
+  stroke: #03a9f4;
+}

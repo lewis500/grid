@@ -19,10 +19,21 @@ svg.vis, cum-chart{
 	stroke-linecap: round;
 }
 
+canvas{
+	// border:1px	solid #000000;
+}
+
 rect.bg{
 	fill: none;
 	// fill: @clr-blue-grey-200;
 	// opacity: .10;
+}
+
+.mine{
+	// border:1px	solid #000000;
+	// width: 100px;
+	// height: 100px;
+	// background-color: red;
 }
 
 
@@ -54,6 +65,32 @@ rect.intersection{
 .signal rect.on{
 	fill: @clr-teal-300;
 }
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.chart path{
+	stroke-width: 1px;
+	fill: none;
+}
+
+.en {
+	stroke: @clr-pink-500;
+}
+
+.flow{
+	stroke: @clr-green-500;
+}
+
+.ex {
+	stroke: @clr-light-blue-500;
+}
+
 
 // .up_down{
 // 	fill: @clr-purple-500;

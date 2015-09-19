@@ -31,10 +31,11 @@ class Ctrl
 					S.advance()
 					@scope.traffic.tick()
 					@scope.$evalAsync()
-					if !@paused
-						@tick()
-					true
-				, S.pace
+					@paused
+					# if !@paused
+					# 	@tick()
+					# true
+				
 
 	play: ->
 		@pause()
@@ -52,6 +53,41 @@ class Ctrl
 		@physics = false #physics stage not happening
 		@scope.traffic.day_end()
 		setTimeout => @day_start()
+
+canDer = ->
+	directive = 
+		scope: 
+			cars: '='
+		link: (scope,el,attr)->
+			[width,height] = [+attr.width,+attr.height]
+			fo =d3.select el[0]
+					.append 'foreignObject'	
+					# .attr 'width',100+
+					# .attr 'height',100
+
+			# div = fo.append 'xhtml:div'
+			# 		.attr 'class','mine'
+
+			ctx = fo
+					.append 'xhtml:canvas'
+					.attr 'width',"700px"
+					.attr 'height',"700px"
+					.node()
+					.getContext '2d'
+
+			ctx.fRect= (x,y,w,h)->
+				x = parseInt x
+				y = parseInt y
+				ctx.fillRect x,y,w,h
+
+			scope.$watch ()->
+					S.time
+				, ->
+					ctx.clearRect 0, 0, 700,700
+					_.forEach scope.cars, (c)->
+						ctx.fillStyle = c.color
+						{x,y} = c
+						ctx.fRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
 
 visDer = ->
 	directive = 
@@ -86,4 +122,8 @@ signalDer = ->
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'signalDer',signalDer
+	.directive 'mfdDer',require './mfd'
+	.directive 'horAxis', require './directives/xAxis'
+	.directive 'verAxis', require './directives/yAxis'
+	.directive 'canDer', canDer
 

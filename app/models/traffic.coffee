@@ -36,7 +36,7 @@ class Traffic
 				if j 
 					@lanes.push new Lane i,j,dir
 
-		_.forEach [0..1000], => @create_car()
+		_.forEach [0..S.num_cars], => @create_car()
 
 	create_car: ->
 		a = _.sample @outer
@@ -52,20 +52,40 @@ class Traffic
 		@cars.push car
 
 	tick: ->
-		_.invoke @intersections,'tick'
-		_.invoke @lanes, 'tick'
+		(i.tick() for i in @intersections)
+		(l.tick() for l in @lanes)
+		for car in @waiting
+			if car
+				if car.t_en < S.time
+					car.enter()
+					car.start_lane.receive car
+					car.turns.pop()
+					_.remove @waiting, car
+					@traveling.push car
 
-		@waiting.forEach (car)=>
-			if car.t_en < S.time
-				car.enter()
-				car.start_lane.receive car
-				car.turns.pop()
-				_.remove @waiting, car
-				@traveling.push car
+		@traveling = _.filter @traveling, (c)-> !c.exited
 
-		@traveling.forEach (c,i,k)=> 
-			if c.exited
-				_.remove k, c
+		@log()
+
+		if (S.time%S.frequency==0) then @remember()
+
+	remember: ->
+		mem = 
+			n: @traveling.length
+			v: 0
+			f: 0
+
+		for c in @traveling
+			if c.stopped == 0
+				mem.f++
+				mem.v+=(1/mem.n)
+		@memory.push mem
+
+	log: ->
+		@cum.push
+			time: S.time
+			cumEn: @cumEn
+			cumEx: @cumEx
 
 	done: ->
 		(@waiting.length+@traveling.length)==0
@@ -75,9 +95,8 @@ class Traffic
 		_.remove @traveling, car
 
 	day_end:->
-		_.invoke @cars, 'eval_cost'
-		_.sample @cars, 25
-			.forEach (d)->d.choose()
+		c.eval_cost() for c in @cars
+		c.choose() for c in _.sample @cars, 25
 
 	day_start:->
 		_.assign this,
