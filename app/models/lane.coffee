@@ -14,8 +14,6 @@ class Cell
 	space: S.space
 
 	receive:(car)->
-		car.cell?.remove()
-		car.cell = this
 		car.set_xy @x,@y,@x2,@y2
 		@last=S.time
 		@temp_car = car
@@ -41,15 +39,17 @@ class Lane
 		@col = Math.min @beg.col,@end.col
 
 	tick: ->
-		_.forEachRight @cells, (cell,i,k)=>
-			if !(car=cell.car) then return
-			if i==(k.length-1) #if the last cell
-				if @end.can_go @direction
-					@end.turn_car car,cell
-			else
-				target = k[i+1]
-				if target.is_free()
-					target.receive car
+		k = @cells
+		for cell,i in k
+			if car=cell.car
+				if i==(k.length-1) #if the last cell
+					if @end.can_go @direction
+						@end.turn_car car,cell
+				else
+					target = k[i+1]
+					if target.is_free()
+						target.receive car
+						cell.remove()
 
 	day_start:->
 		for cell in @cells

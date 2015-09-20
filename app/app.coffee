@@ -60,16 +60,12 @@ canDer = ->
 			cars: '='
 		link: (scope,el,attr)->
 			[width,height] = [+attr.width,+attr.height]
-			fo =d3.select el[0]
-					# .append 'foreignObject'	
 
-			ctx = fo
+			ctx = d3.select el[0]
 					.append 'canvas'
 					.attr
 						width: 700
 						height: 700
-					# .attr 'width',"700px"
-					# .attr 'height',"700px"
 					.node()
 					.getContext '2d'
 

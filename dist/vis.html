@@ -2,7 +2,6 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
 </div>
-<div style="position: absolute;" can-der="can-der" cars="traffic.traveling"></div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 100 100" class="vis">
   <defs>
     <marker id="markerArrow" markerwidth="1" markerheight="1" orient="auto">
@@ -23,6 +22,9 @@
           <path ng-attr-d="{{::vm.place_lane(d)}}" class="lane"></path>
         </g>
       </g>
+    </g>
+    <g class="g-cars">
+      <rect ng-repeat="car in traffic.traveling track by car.id" ng-attr-transform="{{vm.place_car(car)}}" width=".8" height=".8" y="-.4" x="-.4" ng-attr-fill="{{car.color}}" class="car"></rect>
     </g>
   </g>
 </svg>

@@ -2,7 +2,7 @@
 S = require './settings'
 Lane = require './lane'
 Intersection = require './intersection'
-Signal = require './signal'
+# Signal = require './signal'
 Car = require './car'
 
 

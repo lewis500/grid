@@ -23,8 +23,7 @@ class Car
 			exited: false
 			cell: undefined
 			t_en: Math.max 0,(@target + _.random -2,2)
-			# t_en: 10
-			turns: _.clone @perm_turns
+			turns: _.shuffle _.clone @perm_turns
 
 	set_xy: (@x,@y,@x2,@y2)->
 

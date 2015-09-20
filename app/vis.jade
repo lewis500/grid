@@ -1,6 +1,6 @@
 div(layout='row')
 	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
-div(style='position: absolute;' can-der cars='traffic.traveling')
+//- div(style='position: absolute;' can-der cars='traffic.traveling')
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 100 100" )
 	defs
 		marker#markerArrow(markerwidth='1' markerheight='1' orient='auto')
@@ -17,7 +17,7 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 100 100" )
 			g.g-lanes
 				g.g-lane(ng-repeat='d in traffic.lanes track by d.id' ng-attr-class='{{::d.direction}}')
 					path.lane(ng-attr-d='{{::vm.place_lane(d)}}' )
-		//- g.g-cars
+		g.g-cars
 			rect.car(ng-repeat='car in traffic.traveling track by car.id' ng-attr-transform='{{vm.place_car(car)}}' width='.8' height='.8' y='-.4' x='-.4' ng-attr-fill='{{car.color}}')
 
 //- mfd-der(memory = 'traffic.memory')

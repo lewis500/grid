@@ -1,6 +1,19 @@
 _ = require 'lodash'
 S = require './settings'
-Signal = require './signal'
+
+class Signal
+	constructor: ->
+		@count = 0
+		@direction = 'up_down'
+		@id = _.uniqueId 'signal-'
+
+	tick: ->
+		@count++
+		if @count >= S.phase
+			[@count, @direction] = [0, 'up_down'] #add offset later
+			return
+		if @count >= (S.green*S.phase)
+			@direction = 'left_right'
 
 class Intersection
 	constructor:(@row,@col)->
@@ -28,7 +41,7 @@ class Intersection
 
 	turn_car:(car,cell)->
 		if car.des.id == @id
-			car.cell.remove()
+			cell.remove()
 			car.exited = true
 			car.t_ex = S.time
 		else
@@ -36,6 +49,7 @@ class Intersection
 			if lane.is_free()
 				lane.receive car
 				car.entered=true
+				cell?.remove()
 				car.turns.shift()
 
 	can_go: (direction)->
