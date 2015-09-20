@@ -6805,12 +6805,16 @@ cum-chart {
   display: inline block;
 }
 .lane {
-  stroke: #e0e0e0;
+  stroke: #424242;
   stroke-width: 1.4px;
   stroke-linecap: round;
+  marker-end: url(#markerArrow);
 }
 rect.bg {
   fill: none;
+}
+.outer {
+  stroke: #455a64;
 }
 rect.car {
   fill-opacity: .8;

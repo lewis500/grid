@@ -13,10 +13,13 @@ svg.vis, cum-chart{
 	display: inline block;
 }
 
+
+
 .lane{
-	stroke: @clr-grey-300;
+	stroke: @clr-grey-800;
 	stroke-width: 1.4px;
 	stroke-linecap: round;
+	marker-end : url(#markerArrow);
 }
 
 canvas{
@@ -27,6 +30,10 @@ rect.bg{
 	fill: none;
 	// fill: @clr-blue-grey-200;
 	// opacity: .10;
+}
+
+.outer{
+	stroke: @clr-blue-grey-700;
 }
 
 .mine{

@@ -23,6 +23,21 @@ class Intersection
 	set_end_lane: (lane)->
 		@end_lanes[lane.direction] = lane
 
+	day_start: ->
+		@signal.count = 0
+
+	turn_car:(car,cell)->
+		if car.des.id == @id
+			car.cell.remove()
+			car.exited = true
+			car.t_ex = S.time
+		else
+			lane = @beg_lanes[car.turns[0]]
+			if lane.is_free()
+				lane.receive car
+				car.entered=true
+				car.turns.shift()
+
 	can_go: (direction)->
 		direction in @directions[@signal.direction]
 

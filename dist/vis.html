@@ -2,13 +2,19 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
 </div>
-<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 100 100" ng-init="traffic.setup()" class="vis">
+<div style="position: absolute;" can-der="can-der" cars="traffic.traveling"></div>
+<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 100 100" class="vis">
+  <defs>
+    <marker id="markerArrow" markerwidth="1" markerheight="1" orient="auto">
+      <polygon points=".1,.5 .25,.25 .1,.1" stroke-width=".1"></polygon>
+    </marker>
+  </defs>
   <rect width="100" height="100" class="bg"></rect>
-  <g class="g-main">
+  <g transform="translate(0,0)" class="g-main">
     <g class="g-infrastructure">
       <g class="g-intersections">
         <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{::vm.place_intersection(i)}}" class="g-intersection">
-          <rect width="2" height="2" x="-1" y="-1" class="intersection"></rect>
+          <rect width="2" height="2" x="-1" y="-1" ng-class="{outer: i.outer}" class="intersection"></rect>
           <g signal-der="signal-der" direction="i.signal.direction" class="signal"></g>
         </g>
       </g>
@@ -17,9 +23,6 @@
           <path ng-attr-d="{{::vm.place_lane(d)}}" class="lane"></path>
         </g>
       </g>
-    </g>
-    <g class="g-cars">
-      <rect ng-repeat="car in traffic.traveling track by car.id" ng-attr-transform="{{vm.place_car(car)}}" width=".8" height=".8" y="-.4" x="-.4" ng-attr-fill="{{car.color}}" class="car"></rect>
     </g>
   </g>
 </svg>

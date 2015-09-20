@@ -14,8 +14,10 @@ class Cell
 	space: S.space
 
 	receive:(car)->
+		car.cell?.remove()
+		car.cell = this
 		car.set_xy @x,@y,@x2,@y2
-		# if !car.exited
+		@last=S.time
 		@temp_car = car
 
 	remove: ->
@@ -26,8 +28,8 @@ class Cell
 		if @car
 			@last = S.time
 
-	is_free: (time)->
-		(time-@last)>@space
+	is_free: ->
+		(S.time-@last)>@space
 
 class Lane
 	constructor: (@beg,@end,@direction)->
@@ -43,17 +45,22 @@ class Lane
 			if !(car=cell.car) then return
 			if i==(k.length-1) #if the last cell
 				if @end.can_go @direction
-					target_lane = @end.beg_lanes[car.turns[0]]
-					target = target_lane?.cells[0]
-					car.turns.shift()
-					if car.turns.length ==0
-						return car.exit()
+					@end.turn_car car,cell
 			else
 				target = k[i+1]
+				if target.is_free()
+					target.receive car
 
-			if target?.is_free S.time
-				cell.remove()
-				target.receive car,S.time
+	day_start:->
+		for cell in @cells
+			cell.car = cell.temp_car = false
+			cell.last = -Infinity
+
+	is_free: ->
+		@cells[0].is_free()
+
+	receive: (car)->
+		@cells[0].receive car
 
 	setup: ->
 		a = 

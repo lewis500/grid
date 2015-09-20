@@ -9,6 +9,8 @@ class Ctrl
 		@paused = true
 		@scope.S = S
 		@scope.traffic = new Traffic
+		# @physics = true #physics stage happening
+
 		@day_start()
 
 	place_car: (car)->
@@ -31,7 +33,9 @@ class Ctrl
 					S.advance()
 					@scope.traffic.tick()
 					@scope.$evalAsync()
-					@paused
+					if !@paused then @tick()
+					true
+				, S.pace
 
 	play: ->
 		@pause()
@@ -57,20 +61,29 @@ canDer = ->
 		link: (scope,el,attr)->
 			[width,height] = [+attr.width,+attr.height]
 			fo =d3.select el[0]
-					.append 'foreignObject'	
+					# .append 'foreignObject'	
 
 			ctx = fo
-					.append 'xhtml:canvas'
-					.attr 'width',"700px"
-					.attr 'height',"700px"
+					.append 'canvas'
+					.attr
+						width: 700
+						height: 700
+					# .attr 'width',"700px"
+					# .attr 'height',"700px"
 					.node()
 					.getContext '2d'
 
-			# ctx.fRect= (x,y,w,h)->
-			# 	x = parseInt x
-			# 	y = parseInt y
-			# 	ctx.fillRect x,y,w,h
+			ctx.fRect= (x,y,w,h)->
+				x = parseInt x
+				y = parseInt y
+				ctx.fillRect x,y,w,h
 
+			ctx.sRect = (x,y,w,h)->
+				x = parseInt(x)+0.50
+				y = parseInt(y)+0.50
+				ctx.strokeRect x,y,w,h
+
+			ctx.strokeStyle = '#ccc'
 			scope.$watch ()->
 					S.time
 				, ->
@@ -78,7 +91,9 @@ canDer = ->
 					_.forEach scope.cars, (c)->
 						ctx.fillStyle = c.color
 						{x,y} = c
-						ctx.fillRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
+						ctx.fRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
+						ctx.sRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
+
 
 visDer = ->
 	directive = 

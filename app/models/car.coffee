@@ -3,39 +3,30 @@ S = require './settings'
 
 
 class Car
-	constructor: (@start_cell,@perm_turns, @des)->
+	constructor: (@orig,@perm_turns,@des)->
+		#des is an intersection
 		_.assign this,
 			id: _.uniqueId()
 			cost0: Infinity 
-			target: _.random 4,300
+			target: _.random 4,600
 			color: _.sample @colors
 
-	# at_destination: (x,y)->
-	# 	(@des.x == x) and (@des.y == y)
+	is_destination: (i)->
+		i.id == @des.id
 
 	colors: ['#03A9F4','#8BC34A','#E91E63','#FF5722','#607D8B','#3F51B5']
 
-	enter:->
+	day_start: ->
 		_.assign this,
 			cost0: @cost
+			entered: false
 			exited: false
-			stopped: 0
+			cell: undefined
+			t_en: Math.max 0,(@target + _.random -2,2)
+			# t_en: 10
 			turns: _.clone @perm_turns
-			
-		@start_cell.receive this,S.time
-
-	assign_error:-> 
-		@t_en = Math.max 0,(@target + _.random -2,2)
-
-	stop: ->
-		@stopped = S.stopping_time 
 
 	set_xy: (@x,@y,@x2,@y2)->
-		# if @x2 == @des.x and @y2 = @des.y
-		# 	@exit()
-
-	exit: ->
-		[@t_ex, @exited] = [S.time, true]
 
 	eval_cost: ->
 		@sd = @t_ex - S.wish
