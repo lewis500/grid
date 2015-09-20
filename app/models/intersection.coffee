@@ -9,7 +9,7 @@ class Signal
 
 	tick: ->
 		@count++
-		if @count >= S.phase
+		if @count >= (S.phase + _.random -5,5)
 			[@count, @direction] = [0, 'up_down'] #add offset later
 			return
 		if @count >= (S.green*S.phase)
@@ -38,21 +38,6 @@ class Intersection
 
 	day_start: ->
 		@signal.count = 0
-
-	turn_car:(car,cell)->
-		if car.des.id == @id
-			cell.remove()
-			car.exited = true
-			car.t_ex = S.time
-			true
-		else
-			lane = @beg_lanes[car.turns[0]]
-			if lane.is_free()
-				lane.receive car
-				car.entered=true
-				cell?.remove()
-				car.turns.shift()
-				true
 
 	can_go: (direction)->
 		direction in @directions[@signal.direction]

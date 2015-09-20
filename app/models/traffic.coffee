@@ -50,27 +50,56 @@ class Traffic
 		car = new Car a,turns,b
 		@cars.push car
 
-	tick: ->
-		(i.tick() for i in @intersections)
-		num_moving = _.sum (l.tick() for l in @lanes)
-		@waiting.forEach (car)=>
-			if car.t_en < S.time
-				if car.orig.can_go car.turns[0]
-					car.orig.turn_car car
+	tick_lane: (lane)->
+		num_moving = 0
+		k = lane.cells
+		if (car=k[k.length-1].car)
+			if lane.end.can_go lane.direction
+				if @turn_car car, lane.end
+					k[k.length-1].remove()
+					num_moving++
 
-		@waiting = _.filter @cars,(c)-> !c.entered
-		@traveling = _.filter @cars, (c)-> c.entered and !c.exited
+		for cell,i in k[0...k.length-1]
+				target = k[i+1]
+				if target.is_free() and (car=cell.car)
+					num_moving++
+					target.receive car
+					cell.remove()
+		num_moving
+
+	turn_car: (car,i)->
+		if car.des.id == i.id
+			car.exited = true
+			car.t_ex = S.time
+			true
+		else
+			lane = i.beg_lanes[car.turns[0]]
+			if lane.is_free()
+				lane.receive car
+				car.entered=true
+				car.turns.shift()
+				true
+
+	tick: ->
+		i.tick() for i in @intersections
+		num_moving = _.sum (@tick_lane lane for lane in @lanes)
+
+		for car in @waiting
+			if car.t_en<S.time then @turn_car car,car.orig
 
 		for l in @lanes
 			for c in l.cells
 				c.finalize()
 
-		if S.time %S.frequency ==0
-			@memory.push 
-				n: @traveling.length
-				v: num_moving/@traveling.length
-				f: num_moving
-				id: _.uniqueId()
+		@waiting = _.filter @cars,(c)-> !c.entered
+		@traveling = _.filter @cars, (c)-> c.entered and !c.exited
+
+		# if S.time %S.frequency ==0
+		# 	@memory.push 
+		# 		n: @traveling.length
+		# 		v: num_moving/@traveling.length
+		# 		f: num_moving
+		# 		id: _.uniqueId()
 
 	log: ->
 		@cum.push
