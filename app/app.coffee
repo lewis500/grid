@@ -78,6 +78,7 @@ twoDer = ->
 							t = twos[d.id] = two.makeRectangle -2,-2,4,4
 							t.fill = d.color
 							t.stroke = 'white'
+							# t.linewidth =.5
 
 
 					for d in data

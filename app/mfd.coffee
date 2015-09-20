@@ -82,7 +82,7 @@ class Ctrl
 		@horAxis = d3.svg.axis()
 			.scale @hor
 			.orient 'bottom'
-			.ticks 8
+			.ticks 5
 
 		@verAxis = d3.svg.axis()
 			.scale @ver

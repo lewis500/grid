@@ -14,7 +14,7 @@ class Car
 	is_destination: (i)->
 		i.id == @des.id
 
-	colors: ['#03A9F4','#8BC34A','#E91E63','#FF5722','#607D8B','#3F51B5']
+	colors: ['#03A9F4','#03A9F4','#8BC34A','#FF5722','#607D8B','#3F51B5','#4CAF50','#651FFF','#1DE9B6']
 
 	day_start: ->
 		_.assign this,
