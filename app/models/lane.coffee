@@ -39,17 +39,20 @@ class Lane
 		@col = Math.min @beg.col,@end.col
 
 	tick: ->
+		num_moving = 0
 		k = @cells
 		for cell,i in k
 			if car=cell.car
 				if i==(k.length-1) #if the last cell
 					if @end.can_go @direction
-						@end.turn_car car,cell
+						if @end.turn_car car,cell then num_moving++
 				else
 					target = k[i+1]
 					if target.is_free()
+						num_moving++
 						target.receive car
 						cell.remove()
+		num_moving
 
 	day_start:->
 		for cell in @cells

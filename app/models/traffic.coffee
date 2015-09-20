@@ -52,7 +52,7 @@ class Traffic
 
 	tick: ->
 		(i.tick() for i in @intersections)
-		(l.tick() for l in @lanes)
+		num_moving = _.sum (l.tick() for l in @lanes)
 		@waiting.forEach (car)=>
 			if car.t_en < S.time
 				if car.orig.can_go car.turns[0]
@@ -66,21 +66,11 @@ class Traffic
 				c.finalize()
 
 		if S.time %S.frequency ==0
-			@log()
-			@remember()
-
-	remember: ->
-		mem = 
-			n: @traveling.length
-			v: 0
-			f: 0
-
-		for c in @traveling
-			if c.stopped == 0
-				mem.f++
-				mem.v+=(1/mem.n)
-				
-		@memory.push mem
+			@memory.push 
+				n: @traveling.length
+				v: num_moving/@traveling.length
+				f: num_moving
+				id: _.uniqueId()
 
 	log: ->
 		@cum.push
@@ -90,10 +80,6 @@ class Traffic
 
 	done: ->
 		(@waiting.length+@traveling.length)==0
-
-	remove: (car)->
-		@cumEx++
-		_.remove @traveling, car
 
 	day_end:->
 		c.eval_cost() for c in @cars

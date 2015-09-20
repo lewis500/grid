@@ -4,8 +4,8 @@ class Settings
 		_.assign this,
 			size: 10
 			stopping_time: 5
-			pace: 25
-			space: 3
+			pace: 2
+			space: 4
 			phase: 80
 			green: .5
 			lane_length: 10

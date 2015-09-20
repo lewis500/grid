@@ -6804,6 +6804,10 @@ svg.vis,
 cum-chart {
   display: inline block;
 }
+mfd-der,
+[mfd-der] {
+  position: relative;
+}
 .lane {
   stroke: #424242;
   stroke-width: 1.4px;
@@ -6817,27 +6821,24 @@ rect.bg {
   stroke: #455a64;
 }
 rect.car {
-  fill-opacity: .8;
+  fill-opacity: .9;
   stroke-width: .15px;
   rx: .08px;
   ry: .08px;
   stroke: white;
 }
-g.g-intersection {
-  opacity: .9;
-}
 rect.intersection {
-  fill: #bdbdbd;
-  rx: .2;
-  ry: .2;
+  display: none;
 }
 .signal rect {
-  rx: .15;
-  ry: .15;
-  fill: #f06292;
+  rx: .1;
+  ry: .1;
+  fill: #e57373;
+  stroke: white;
+  stroke-width: .1px;
 }
 .signal rect.on {
-  fill: #4db6ac;
+  fill: #81c784;
 }
 .axis path,
 .axis line {

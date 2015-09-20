@@ -9,8 +9,6 @@ class Ctrl
 		@paused = true
 		@scope.S = S
 		@scope.traffic = new Traffic
-		# @physics = true #physics stage happening
-
 		@day_start()
 
 	place_car: (car)->
@@ -54,42 +52,43 @@ class Ctrl
 		@scope.traffic.day_end()
 		setTimeout => @day_start()
 
-canDer = ->
+twoDer = ->
 	directive = 
 		scope: 
 			cars: '='
 		link: (scope,el,attr)->
-			[width,height] = [+attr.width,+attr.height]
+			params = { width: 700, height: 700, type: Two.Types.webgl }
+			two = new Two(params).appendTo(el[0])
+			sel = d3.select el[0]
 
-			ctx = d3.select el[0]
-					.append 'canvas'
-					.attr
-						width: 700
-						height: 700
-					.node()
-					.getContext '2d'
+			data = []
+			map = {}
+			twos = {}
 
-			ctx.fRect= (x,y,w,h)->
-				x = parseInt x
-				y = parseInt y
-				ctx.fillRect x,y,w,h
-
-			ctx.sRect = (x,y,w,h)->
-				x = parseInt(x)+0.50
-				y = parseInt(y)+0.50
-				ctx.strokeRect x,y,w,h
-
-			ctx.strokeStyle = '#ccc'
-			scope.$watch ()->
+			scope.$watch ->
 					S.time
 				, ->
-					ctx.clearRect 0, 0, 700,700
-					_.forEach scope.cars, (c)->
-						ctx.fillStyle = c.color
-						{x,y} = c
-						ctx.fRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
-						ctx.sRect( (x-.4)*7,(y-.4)*7,.8*7,.8*7)
+					newD = scope.cars
+					new_map = {}
+					for d in newD
+						new_map[d.id] = d
+						if !map[d.id]
+							data.push d
+							map[d.id] = d
+							t = twos[d.id] = two.makeRectangle -2,-2,4,4
+							t.fill = d.color
+							t.stroke = 'white'
 
+
+					for d in data
+						if !new_map[d.id]
+							delete map[d.id]
+							delete (t = twos[d.id])
+							two.remove t
+						else
+							twos[d.id].translation.set d.x*7, d.y*7
+
+					two.update()
 
 visDer = ->
 	directive = 
@@ -124,8 +123,47 @@ signalDer = ->
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'signalDer',signalDer
+	.directive 'twoDer',twoDer
 	.directive 'mfdDer',require './mfd'
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
-	.directive 'canDer', canDer
+	# .directive 'canDer', canDer
+
+
+
+# canDer = ->
+# 	directive = 
+# 		scope: 
+# 			cars: '='
+# 		link: (scope,el,attr)->
+
+# 			ctx = d3.select el[0]
+# 					.append 'canvas'
+# 					.attr
+# 						width: 700
+# 						height: 700
+# 					.node()
+# 					.getContext '2d'
+
+# 			ctx.fRect= (x,y,w,h)->
+# 				x = parseInt x
+# 				y = parseInt y
+# 				ctx.fillRect x,y,w,h
+
+# 			ctx.sRect = (x,y,w,h)->
+# 				x = .5+parseInt x
+# 				y = .5+parseInt y
+# 				ctx.strokeRect x,y,w,h
+
+# 			ctx.strokeStyle = '#ccc'
+# 			scope.$watch ->
+# 					S.time
+# 				, ->
+# 					ctx.clearRect 0, 0, 700,700
+# 					_.forEach scope.cars, (c)->
+# 						ctx.fillStyle = c.color
+# 						{x,y} = c
+# 						ctx.fRect x*7,y*7,4,4
+# 						ctx.sRect x*7,y*7,4,4
+
 

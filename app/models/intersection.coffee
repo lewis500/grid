@@ -44,6 +44,7 @@ class Intersection
 			cell.remove()
 			car.exited = true
 			car.t_ex = S.time
+			true
 		else
 			lane = @beg_lanes[car.turns[0]]
 			if lane.is_free()
@@ -51,6 +52,7 @@ class Intersection
 				car.entered=true
 				cell?.remove()
 				car.turns.shift()
+				true
 
 	can_go: (direction)->
 		direction in @directions[@signal.direction]

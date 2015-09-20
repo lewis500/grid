@@ -13,7 +13,9 @@ svg.vis, cum-chart{
 	display: inline block;
 }
 
-
+mfd-der, [mfd-der]{
+	position: relative;
+}
 
 .lane{
 	stroke: @clr-grey-800;
@@ -22,9 +24,6 @@ svg.vis, cum-chart{
 	marker-end : url(#markerArrow);
 }
 
-canvas{
-	// border:1px	solid #000000;
-}
 
 rect.bg{
 	fill: none;
@@ -45,7 +44,7 @@ rect.bg{
 
 
 rect.car{
-	fill-opacity: .8;
+	fill-opacity: .9;
 	stroke-width: .15px;
 	rx: .08px;
 	ry: .08px;
@@ -54,23 +53,26 @@ rect.car{
 }
 
 g.g-intersection{
-	opacity: .9;
+	// opacity: .9;
 }
 
 rect.intersection{
-	fill: @clr-grey-400;
-	rx: .2;
-	ry: .2;
+	display: none;
+	// fill: @clr-grey-400;
+	// rx: .2;
+	// ry: .2;
 }
 
 .signal rect{
-	rx: .15;
-	ry: .15;
-	fill: @clr-pink-300;
+	rx: .1;
+	ry: .1;
+	fill: @clr-red-300;
+	stroke: white;
+	stroke-width: .1px;
 }
 
 .signal rect.on{
-	fill: @clr-teal-300;
+	fill: @clr-green-300;
 }
 
 
