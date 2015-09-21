@@ -1,5 +1,4 @@
 TO DO
-simplify
-color outer intersections
-make them start off at an intersection again
-cahgen time watch to a broadcast?
+more intelligent routing. greedy method of choosing direction with fewer cars on it.
+use twoJS for the intersections rather than the ng-repeat on the directive
+

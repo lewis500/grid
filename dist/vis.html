@@ -17,6 +17,7 @@
           <g class="g-intersections">
             <g ng-repeat="i in traffic.intersections track by i.id" ng-attr-transform="{{::vm.place_intersection(i)}}" class="g-intersection">
               <rect width="2" height="2" x="-1" y="-1" ng-class="{outer: i.outer}" class="intersection"></rect>
+              <g signal-der="signal-der" direction="i.signal.direction" class="signal"></g>
             </g>
           </g>
           <g class="g-lanes">
@@ -28,4 +29,5 @@
       </g>
     </svg>
   </div>
+  <div memory="traffic.memory" mfd-der="mfd-der" flex="flex" offset="10"></div>
 </div>
