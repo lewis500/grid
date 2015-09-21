@@ -10,7 +10,7 @@ class Settings
 			green: .5
 			lane_length: 10
 			wish: 150
-			num_cars: 2000
+			num_cars: 4000
 			time: 0
 			beta: .5
 			gamma: 2

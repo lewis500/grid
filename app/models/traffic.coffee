@@ -94,12 +94,12 @@ class Traffic
 		@waiting = _.filter @cars,(c)-> !c.entered
 		@traveling = _.filter @cars, (c)-> c.entered and !c.exited
 
-		# if S.time %S.frequency ==0
-		# 	@memory.push 
-		# 		n: @traveling.length
-		# 		v: num_moving/@traveling.length
-		# 		f: num_moving
-		# 		id: _.uniqueId()
+		if S.time %S.frequency ==0
+			@memory.push 
+				n: @traveling.length
+				v: num_moving/@traveling.length
+				f: num_moving
+				id: _.uniqueId()
 
 	log: ->
 		@cum.push
