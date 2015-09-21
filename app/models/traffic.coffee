@@ -113,7 +113,6 @@ class Traffic
 	day_end:->
 		c.eval_cost() for c in @cars
 		c.choose() for c in _.sample @cars, 25
-		setTimeout => @day_start()
 
 	day_start:->
 		_.assign this,
@@ -123,7 +122,6 @@ class Traffic
 			cumEn: 0
 			cumEx: 0
 			waiting: _.clone @cars
-		S.reset_time()
 		for intersection in @intersections
 			intersection.day_start() 
 		for lane in @lanes

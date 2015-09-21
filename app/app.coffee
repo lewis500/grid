@@ -23,21 +23,33 @@ class Ctrl
 	click: (val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
-		if @physics
+		# if @physics
+		# 	setTimeout =>
+		# 			if @scope.traffic.done()
+		# 				@day_end()
+		# 				return
+		# 			S.advance()
+		# 			@scope.traffic.tick()
+		# 			@scope.$evalAsync()
+		# 			# @paused
+		# 			if !@paused then @tick()
+		# 			# true
+		# 		, S.pace
 			d3.timer =>
 					if @scope.traffic.done()
 						@day_end()
-						true
+						return true
 					S.advance()
 					@scope.traffic.tick()
 					@scope.$evalAsync()
-					if !@paused then @tick()
-					true
-				, S.pace
+					@paused
+					# if !@paused then @tick()
+					# true
+				# , S.pace
 
 	play: ->
 		@pause()
-		d3.timer.flush()
+		# d3.timer.flush()
 		@paused = false
 		@tick()
 
@@ -49,7 +61,9 @@ class Ctrl
 
 	day_end: ->
 		@physics = false #physics stage not happening
+		# d3.timer.flush()
 		@scope.traffic.day_end()
+		# @day_start()
 		setTimeout => @day_start()
 
 twoDer = ->
@@ -58,7 +72,7 @@ twoDer = ->
 			cars: '='
 		link: (scope,el,attr)->
 			params = { width: 700, height: 700, type: Two.Types.webgl }
-			two = new Two(params).appendTo(el[0])
+			two = new Two(params).appendTo el[0]
 			sel = d3.select el[0]
 
 			data = []
@@ -70,23 +84,25 @@ twoDer = ->
 				, ->
 					newD = scope.cars
 					new_map = {}
+					enter = {}
 					for d in newD
 						new_map[d.id] = d
 						if !map[d.id]
 							data.push d
 							map[d.id] = d
-							t = twos[d.id] = two.makeRectangle -2,-2,4,4
-							t.fill = d.color
-							t.stroke = 'white'
-							# t.linewidth =.5
-
+							enter[d.id] = d
+							if !(twos[d.id])
+								twos[d.id] = two.makeRectangle -2,-2,4,4
+								twos[d.id].fill = d.color
+								twos[d.id].stroke = 'white'
 
 					for d in data
 						if !new_map[d.id]
 							delete map[d.id]
-							delete (t = twos[d.id])
-							two.remove t
+							two.remove twos[d.id]
 						else
+							if !enter[d.id]
+								two.add twos[d.id]
 							twos[d.id].translation.set d.x*7, d.y*7
 
 					two.update()
@@ -119,6 +135,7 @@ signalDer = ->
 
 			scope.$watch 'direction',(newVal)->
 				signals
+					# .attr 
 					.classed 'on', (d)-> d==newVal
 
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']

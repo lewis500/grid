@@ -8,7 +8,7 @@ class Car
 		_.assign this,
 			id: _.uniqueId()
 			cost0: Infinity 
-			target: _.random 4,600
+			target: _.random 4,300
 			color: _.sample @colors
 
 	is_destination: (i)->
