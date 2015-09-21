@@ -6810,12 +6810,13 @@ mfd-der,
 }
 .lane {
   stroke: #424242;
-  stroke-width: 1.4px;
+  stroke-width: 1px;
   stroke-linecap: round;
   marker-end: url(#markerArrow);
 }
 rect.bg {
-  fill: none;
+  fill: #b0bec5;
+  opacity: .10;
 }
 .outer {
   stroke: #455a64;

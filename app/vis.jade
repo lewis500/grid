@@ -15,11 +15,11 @@ div(layout='row')
 					g.g-intersections
 						g.g-intersection(ng-repeat='i in traffic.intersections track by i.id' ng-attr-transform='{{::vm.place_intersection(i)}}')
 							rect.intersection(width='2' height='2' x='-1' y='-1'  ng-class='{outer: i.outer}')
-							g.signal(signal-der direction='i.signal.direction')
+							//- g.signal(signal-der direction='i.signal.direction')
 					g.g-lanes
 						g.g-lane(ng-repeat='d in traffic.lanes track by d.id' ng-attr-class='{{::d.direction}}')
 							path.lane(ng-attr-d='{{::vm.place_lane(d)}}' )
 			//- g.g-cars
 				rect.car(ng-repeat='car in traffic.traveling track by car.id' ng-attr-transform='{{vm.place_car(car)}}' width='.8' height='.8' y='-.4' x='-.4' ng-attr-fill='{{car.color}}')
 
-	div(memory = 'traffic.memory' mfd-der flex offset='10')
+	//- div(memory = 'traffic.memory' mfd-der flex offset='10')

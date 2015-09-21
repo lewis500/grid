@@ -4,7 +4,7 @@ class Settings
 		_.assign this,
 			size: 10
 			stopping_time: 5
-			pace: 2
+			pace: 1
 			space: 4
 			phase: 120
 			green: .5

@@ -90,9 +90,9 @@ class Lane
 
 		[@a,@b]=[a,b]
 
-		@cells = [0..(S.lane_length-1)].map (n)=> 
-			pos = scale n
-			_pos = scale2 n
+		@cells = [0...20].map (n)=> 
+			pos = scale n*10/20
+			_pos = scale2 n*10/20
 			new Cell pos,_pos
 
 module.exports = Lane
