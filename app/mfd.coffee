@@ -19,23 +19,14 @@ class Ctrl
 			type: Two.Types.webgl
 
 		sel = d3.select el[0]
-			# .append 'div'
-			# .select '.g-main'
-			# .append 'foreignObject'
-			# .append 'div'
-			# .style 'position','absolute'
-			# .attr 'width',@width
-			# .attr 'height',@height
 			.append "div"
 			.style
 				position: 'absolute'
 				left: @m.l
 				top: @m.t
-			# .style 'position','absolute'
 
 		two = new Two params
 			.appendTo sel.node()
-			# .
 
 		@hor = d3.scale.linear()
 				.domain [0,S.num_cars]

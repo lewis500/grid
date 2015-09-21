@@ -29,7 +29,7 @@ class Traffic
 					when 'down' then @grid[i.row+1]?[i.col]
 					when 'left' then @grid[i.row][i.col-1]
 				if j 
-					@lanes.push (lane=new Lane i,j,dir)
+					@lanes.push new Lane i,j,dir
 					if (0<i.row<(S.size-1)) and (0<i.col<(S.size-1))
 						@inner.push i
 					else
@@ -39,9 +39,16 @@ class Traffic
 
 		@create_car() for i in [0...S.num_cars]
 
+	choose_intersection: ->
+		a = _.sample @intersections
+		b = _.sample @intersections
+		if a.id==b.id then @choose_intersection() else {a: a, b: b}
+
+
 	create_car: ->
-		a = _.sample @outer
-		b = _.sample @inner
+		# a = _.sample @intersections
+		# b = _.sample @intersections
+		{a,b} = @choose_intersection()
 		ud = if b.row < a.row then 'up' else 'down'
 		lr = if b.col < a.col then 'left' else 'right'
 		uds = (ud for i in [0...Math.abs(b.row-a.row)])
