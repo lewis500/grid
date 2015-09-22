@@ -3,7 +3,7 @@ S = require './settings'
 
 
 class Car
-	constructor: (@orig,@perm_turns,@des)->
+	constructor: (@orig,@_uds,@_rls,@des)->
 		#des is an intersection
 		_.assign this,
 			id: _.uniqueId()
@@ -23,7 +23,8 @@ class Car
 			exited: false
 			cell: undefined
 			t_en: Math.max 0,(@target + _.random -2,2)
-			turns: _.shuffle _.clone @perm_turns
+			uds: _.clone @_uds
+			rls: _.clone @_rls
 
 	set_xy: (@x,@y,@x2,@y2)->
 

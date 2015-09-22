@@ -37,11 +37,15 @@ class Lane
 		@setup()
 		@row = Math.min @beg.row,@end.row
 		@col = Math.min @beg.col,@end.col
+		@num_cars = 0
 
 	day_start:->
 		for cell in @cells
 			cell.car = cell.temp_car = false
 			cell.last = -Infinity
+
+	count_cars:->
+		@num_cars = d3.sum @cells, (d)-> +(d.car?)
 
 	is_free: ->
 		@cells[0].is_free()

@@ -44,20 +44,17 @@ class Traffic
 		b = _.sample @intersections
 		if a.id==b.id then @choose_intersection() else {a: a, b: b}
 
-
 	create_car: ->
-		# a = _.sample @intersections
-		# b = _.sample @intersections
 		{a,b} = @choose_intersection()
 		ud = if b.row < a.row then 'up' else 'down'
 		lr = if b.col < a.col then 'left' else 'right'
 		uds = (ud for i in [0...Math.abs(b.row-a.row)])
 		lrs = (lr for i in [0...Math.abs(b.col-a.col)])
-		turns = _.shuffle _.flatten([uds,lrs])
-		car = new Car a,turns,b
+		car = new Car a,uds,lrs,b
 		@cars.push car
 
 	tick_lane: (lane)->
+		lane.count_cars()
 		num_moving = 0
 		k = lane.cells
 		if (car=k[k.length-1].car)
@@ -74,17 +71,32 @@ class Traffic
 					cell.remove()
 		num_moving
 
-	turn_car: (car,i)->
-		if car.des.id == i.id
-			car.exited = true
-			car.t_ex = S.time
+	turn_car: (c,i)->
+		if c.des.id == i.id
+			c.exited = true
+			c.t_ex = S.time
 			true
 		else
-			lane = i.beg_lanes[car.turns[0]]
-			if lane.is_free()
-				lane.receive car
-				car.entered=true
-				car.turns.shift()
+			{uds,rls} = c
+			l1 = i.beg_lanes[uds[0]]
+			l2 = i.beg_lanes[rls[0]]
+			if l1?.is_free() and l2?.is_free()
+				if l1.num_cars < l2.num_cars
+					lane_chosen = l1
+					arr_chosen = uds
+				else 
+					lane_chosen = l2
+					arr_chosen = rls
+			else if l1?.is_free()
+				lane_chosen = l1
+				arr_chosen = uds
+			else if l2?.is_free()
+				lane_chosen = l2
+				arr_chosen = rls
+			if lane_chosen
+				lane_chosen.receive c
+				c.entered = true
+				arr_chosen.shift()
 				true
 
 	tick: ->
