@@ -11,15 +11,13 @@ class Traffic
 		_.assign this,
 			intersections: []
 			lanes: []
-			outer: []
-			inner: []
 			directions: ['up','right','down','left']
 			cars: []
 
 		@grid = [0...S.size].map (row)=>
 			[0...S.size].map (col)=>
-				@intersections.push (intersection = new Intersection row,col)
-				intersection
+				@intersections.push (i = new Intersection row,col)
+				i
 
 		for i in @intersections
 			for dir in @directions
@@ -30,12 +28,7 @@ class Traffic
 					when 'left' then @grid[i.row][i.col-1]
 				if j 
 					@lanes.push new Lane i,j,dir
-					if (0<i.row<(S.size-1)) and (0<i.col<(S.size-1))
-						@inner.push i
-					else
-						if (i.row>0) or (i.col>0)
-							@outer.push i
-							i.outer = true
+
 
 		@create_car() for i in [0...S.num_cars]
 
