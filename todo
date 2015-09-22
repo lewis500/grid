@@ -1,4 +1,5 @@
 TO DO
+try it with a* search
 more intelligent routing. greedy method of choosing direction with fewer cars on it.
 use twoJS for the intersections rather than the ng-repeat on the directive
 
