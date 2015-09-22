@@ -2,11 +2,11 @@ _ = require 'lodash'
 class Settings
 	constructor:->
 		_.assign this,
-			size: 10
+			size: 9
 			stopping_time: 5
 			pace: 1
 			space: 4
-			phase: 120
+			phase: 80
 			green: .5
 			lane_length: 10
 			wish: 150
