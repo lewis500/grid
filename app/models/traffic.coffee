@@ -84,7 +84,7 @@ class Traffic
 				if l1.num_cars < l2.num_cars
 					lane_chosen = l1
 					arr_chosen = uds
-				else 
+				else
 					lane_chosen = l2
 					arr_chosen = rls
 			else if l1?.is_free()
