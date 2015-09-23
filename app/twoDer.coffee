@@ -12,7 +12,7 @@ twoDer = ->
 			twos = {}
 
 			scope.$watch ->
-					S.time
+					S.time%3==0
 				, ->
 					newD = scope.cars
 					new_map = {}
@@ -27,14 +27,14 @@ twoDer = ->
 								t.fill = d.color
 								t.stroke = 'white'
 								t.linewidth=.7
-
-					for id,d of map
-						if !new_map[d.id]
+					for id in _.keys map
+						if !new_map[id]
 							map[id] = false
 							two.remove twos[id]
 						else
 							if !enter[id]
 								two.add twos[id]
+							d = map[id]
 							twos[id].translation.set d.x*7, d.y*7
 
 					two.update()

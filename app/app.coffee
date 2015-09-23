@@ -4,6 +4,8 @@ d3 = require 'd3'
 S = require './models/settings'
 Traffic = require './models/traffic'
 
+
+
 class Ctrl
 	constructor:(@scope,@el)->
 		@paused = true
@@ -30,9 +32,7 @@ class Ctrl
 					S.advance()
 					@scope.traffic.tick()
 					@scope.$evalAsync()
-					if !@paused then @tick()
-					true
-				, S.pace
+					@paused
 
 	play: ->
 		@pause()

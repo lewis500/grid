@@ -41,8 +41,8 @@ class Ctrl
 		twos = {}
 
 		@scope.$watch ->
-				S.time
-			, (newD)=>
+				S.time%10==0
+			, =>
 				newD = @memory
 				new_map = {}
 				for d,i in newD

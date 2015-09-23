@@ -9,7 +9,7 @@ class Signal
 
 	tick: ->
 		@count++
-		if @count >= (S.phase + _.random -5,5)
+		if @count >= S.phase
 			[@count, @direction] = [0, 'up_down'] #add offset later
 			return
 		if @count >= (S.green*S.phase)

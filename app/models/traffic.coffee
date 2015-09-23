@@ -13,10 +13,17 @@ class Traffic
 			lanes: []
 			directions: ['up','right','down','left']
 			cars: []
+			inner: []
+			outer: []
 
 		@grid = [0...S.size].map (row)=>
 			[0...S.size].map (col)=>
+
 				@intersections.push (i = new Intersection row,col)
+				if (0<row<(S.size-1)) and (0<col<(S.size-1))
+					@inner.push i
+				else 
+					@outer.push i
 				i
 
 		for i in @intersections
@@ -38,7 +45,9 @@ class Traffic
 		if a.id==b.id then @choose_intersection() else {a: a, b: b}
 
 	create_car: ->
-		{a,b} = @choose_intersection()
+		# {a,b} = @choose_intersection()
+		a = _.sample @outer
+		b = _.sample @inner
 		ud = if b.row < a.row then 'up' else 'down'
 		lr = if b.col < a.col then 'left' else 'right'
 		uds = (ud for i in [0...Math.abs(b.row-a.row)])

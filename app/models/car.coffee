@@ -1,15 +1,16 @@
 _ = require 'lodash'
 S = require './settings'
 
+count = 0
 
 class Car
 	constructor: (@orig,@_uds,@_rls,@des)->
-		#des is an intersection
 		_.assign this,
-			id: _.uniqueId()
+			id: count
 			cost0: Infinity 
-			target: _.random 4,600
+			target: _.random 4,400
 			color: _.sample @colors
+		count++
 
 	is_destination: (i)->
 		i.id == @des.id

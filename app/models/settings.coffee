@@ -2,7 +2,7 @@ _ = require 'lodash'
 class Settings
 	constructor:->
 		_.assign this,
-			size: 9
+			size: 8
 			stopping_time: 5
 			pace: 1
 			space: 4
